@@ -33,15 +33,15 @@ class _MainScreenState extends State<MainScreen> {
     switch (screenId) {
       case (0):
         {
-          return DashboardSection();
+          return const DashboardSection();
         }
       case (1):
         {
-          return ProfileSection();
+          return const ProfileSection();
         }
       case (2):
         {
-          return SubmitQuestionSection();
+          return const SubmitQuestionSection();
         }
     }
   }
@@ -55,7 +55,6 @@ class _MainScreenState extends State<MainScreen> {
               _buildNavigationDrawerTile("Dashboard", 0),
               _buildNavigationDrawerTile("My Profile", 1),
               _buildNavigationDrawerTile("Submit Question", 2),
-              _buildNavigationDrawerTile("Log Out", 3),
             ],
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,9 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Clover',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
+        primaryColorDark: const Color(0xff0B6E4F)
       ),
-      home: const MainScreen(),
+      home: const IntroScreen(),
     );
   }
 }
