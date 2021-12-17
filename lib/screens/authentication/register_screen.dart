@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/data_models/user_model.dart';
+import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final firestoreInstance = FirebaseFirestore.instance;
+  final authInstance = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
   final _nameFieldController = TextEditingController();
@@ -18,10 +22,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordFieldController = TextEditingController();
   bool _isPasswordVisible = true;
 
-  bool checkEmailValid(email) {
+  bool _checkEmailValid(email) {
     return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
+  }
+
+  void _showSnackBarMessage(message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   @override
@@ -37,7 +49,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 50,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Theme
+                        .of(context)
+                        .primaryColorDark,
                   ),
                 ),
                 textAlign: TextAlign.center,
@@ -54,7 +68,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).primaryColorLight,
+                    color: Theme
+                        .of(context)
+                        .primaryColorLight,
                   ),
                   child: Form(
                     key: _formKey,
@@ -89,7 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required!";
-                            } else if (!(checkEmailValid(value))) {
+                            } else if (!(_checkEmailValid(value))) {
                               return "Invalid email format";
                             }
                             return null;
@@ -152,10 +168,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  firestoreInstance.collection("users").add({
-                                    'name': _nameFieldController.text,
-                                    'email': _emailFieldController.text,
-                                    'password': _passwordFieldController.text
+                                  var name = _nameFieldController.text;
+                                  var email = _emailFieldController.text;
+                                  var password = _passwordFieldController.text;
+                                  firestoreInstance
+                                      .collection("users")
+                                      .where("email", isEqualTo: email)
+                                      .get()
+                                      .then((snapshot) =>
+                                  {
+                                    if (snapshot.docs.isEmpty)
+                                      {
+                                        firestoreInstance
+                                            .collection("users")
+                                            .add(
+                                          UserModel(
+                                              name: name,
+                                              email: email,
+                                              password: password,
+                                              education: "0"
+                                          ).toJson(),
+                                        )
+                                            .then((result) =>
+                                        {
+                                          authInstance
+                                              .createUserWithEmailAndPassword(
+                                              email: email,
+                                              password:
+                                              password)
+                                              .then(
+                                                  (userSession) =>
+                                              {
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(builder: (
+                                                        context) => const MainScreen()),
+                                                        (e) => false)
+                                              })
+                                        })
+                                      }
+                                    else
+                                      {
+                                        _showSnackBarMessage(
+                                            "An account already exists with this email.")
+                                      }
                                   });
                                 }
                               },
