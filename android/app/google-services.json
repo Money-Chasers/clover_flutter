@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "442422044802",
+    "project_id": "clover-650d4",
+    "storage_bucket": "clover-650d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442422044802:android:94f9e712077afb7c51ec9b",
+        "android_client_info": {
+          "package_name": "com.cloverpapers.clover"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442422044802-1lj2f38tld9u175r74m5egff2dfv47i3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cloverpapers.clover",
+            "certificate_hash": "a2ba9a6e40cbc35bc53ce28922e02d52cb41164f"
+          }
+        },
+        {
+          "client_id": "442422044802-561b01p9t7m6uuactmj43pnrls0n6ogh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cloverpapers.clover",
+            "certificate_hash": "e11c38b9adb598e5d6d46b8e4ca24a00b3907723"
+          }
+        },
+        {
+          "client_id": "442422044802-i7n3gtmdj5ae33070pht7sdef140qcek.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQUH3FsyAhsLx29EGGhJNLpgGiuK771V0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442422044802-i7n3gtmdj5ae33070pht7sdef140qcek.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

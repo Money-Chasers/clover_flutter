@@ -54,26 +54,28 @@ class IntroScreen extends StatelessWidget {
                 height: 20,
               ),
               FractionallySizedBox(
-                widthFactor: 1,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "Login",
-                    style: GoogleFonts.prompt(
-                      textStyle: const TextStyle(
-                        fontSize: 20,
+                  widthFactor: 1,
+                  child: SizedBox(
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Login",
+                        style: GoogleFonts.prompt(
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
+                  )),
               const SizedBox(
                 height: 10,
               ),

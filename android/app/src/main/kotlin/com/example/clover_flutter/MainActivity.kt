@@ -1,4 +1,4 @@
-package com.example.clover_flutter
+package com.cloverpapers.clover
 
 import io.flutter.embedding.android.FlutterActivity
 

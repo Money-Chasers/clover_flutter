@@ -1,7 +1,10 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -13,9 +16,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Clover',
       theme: ThemeData(
-        primarySwatch: Colors.green,
-        primaryColorDark: const Color(0xff0B6E4F)
-      ),
+          primarySwatch: Colors.green,
+          primaryColorDark: const Color(0xff084e38)),
       home: const IntroScreen(),
     );
   }
