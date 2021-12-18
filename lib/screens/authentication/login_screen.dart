@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailFieldController = TextEditingController();
   final _passwordFieldController = TextEditingController();
-  bool _isPasswordVisible = true;
+  bool _isPasswordVisible = false;
 
   void _showSnackBarMessage(message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -38,16 +39,25 @@ class _LoginScreenState extends State<LoginScreen> {
                 {_showSnackBarMessage("No account exists with this email!")}
               else if (snapshot.docs[0].data()["password"] == password)
                 {
-                  authInstance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password)
-                      .then(
-                        (value) => Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainScreen()),
-                            (e) => false),
-                      )
+                  if (snapshot.docs[0].data()['education'] == "0")
+                    {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EducationScreen()),
+                          (e) => false)
+                    }
+                  else
+                    {
+                      authInstance
+                          .signInWithEmailAndPassword(
+                              email: email, password: password)
+                          .then((value) => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MainScreen()),
+                              (e) => false))
+                    }
                 }
               else
                 {_showSnackBarMessage("Password seems to be incorrect!")}
@@ -57,27 +67,27 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text(
-                "Just one step away!",
-                style: GoogleFonts.oswald(
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: Theme.of(context).primaryColorDark,
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "Just one more step!",
+                  style: GoogleFonts.oswald(
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              FractionallySizedBox(
-                widthFactor: 0.8,
-                child: Container(
+                const SizedBox(
+                  height: 40,
+                ),
+                Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 40,
                     horizontal: 20,
@@ -92,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         TextFormField(
                           controller: _emailFieldController,
+                          autofillHints: const [AutofillHints.email],
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return "This field is required!";
@@ -102,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
-                            label: Text("Email"),
+                            hintText: "Enter email",
                             prefixIcon: Icon(Icons.alternate_email),
                           ),
                           style: GoogleFonts.prompt(
@@ -116,6 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         TextFormField(
                           controller: _passwordFieldController,
+                          autofillHints: const [AutofillHints.password],
                           obscureText: !_isPasswordVisible,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -127,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             filled: true,
                             fillColor: Colors.white,
                             border: const OutlineInputBorder(),
-                            label: const Text("Password"),
+                            hintText: "Enter password",
                             prefixIcon: const Icon(Icons.password),
                             suffixIcon: InkWell(
                               child: _isPasswordVisible
@@ -175,12 +187,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
+                const SizedBox(
+                  height: 40,
+                ),
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ),
         ),
       ),
