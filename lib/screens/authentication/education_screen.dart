@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/screens/main_screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -104,6 +105,9 @@ class _EducationScreenState extends State<EducationScreen> {
                       ),
                       onPressed: () {
                         if (_education != 0) {
+                          //Temporarily moving to main screen to check..
+                          Navigator.pushReplacement(
+                              context, MaterialPageRoute(builder: (context) => const MainScreen()));
 
                         }
                       },

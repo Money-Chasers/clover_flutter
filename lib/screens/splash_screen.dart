@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'main_screen/main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,12 +16,22 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Timer _timer;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   _SplashScreenState() {
-    _timer = Timer(const Duration(milliseconds: 1000), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const IntroScreen()));
-    });
+    _timer = Timer(
+      const Duration(milliseconds: 4000),
+      () {
+        if (currentUser!=null){
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const MainScreen()));
+        }else{
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const IntroScreen()));
+        }
+
+      },
+    );
   }
 
   @override

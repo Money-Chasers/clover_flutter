@@ -19,7 +19,7 @@ class IntroScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Welcome to Clover!",
+                "Welcome to Clover !",
                 style: GoogleFonts.oswald(
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
