@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,6 +12,7 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
+  final _authInstance = FirebaseAuth.instance;
   final _firestoreInstance = FirebaseFirestore.instance;
 
   int _education = 0;
@@ -104,7 +107,24 @@ class _EducationScreenState extends State<EducationScreen> {
                       ),
                       onPressed: () {
                         if (_education != 0) {
-
+                          _firestoreInstance
+                              .collection('users')
+                              .where('email',
+                                  isEqualTo: _authInstance.currentUser!.email)
+                              .get()
+                              .then((snapshot) => {
+                                    _firestoreInstance
+                                        .collection('users')
+                                        .doc(snapshot.docs[0].id)
+                                        .update({'education': _education}).then(
+                                            (value) =>
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MainScreen()),
+                                                    (e) => false))
+                                  });
                         }
                       },
                       child: Text(
