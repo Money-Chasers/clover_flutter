@@ -11,6 +11,7 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
+
   final _firestoreInstance = FirebaseFirestore.instance;
 
   int _education = 0;
@@ -105,10 +106,24 @@ class _EducationScreenState extends State<EducationScreen> {
                       ),
                       onPressed: () {
                         if (_education != 0) {
-                          //Temporarily moving to main screen to check..
-                          Navigator.pushReplacement(
-                              context, MaterialPageRoute(builder: (context) => const MainScreen()));
-
+                          _firestoreInstance
+                              .collection('users')
+                              .where('email',
+                                  isEqualTo: _authInstance.currentUser!.email)
+                              .get()
+                              .then((snapshot) => {
+                                    _firestoreInstance
+                                        .collection('users')
+                                        .doc(snapshot.docs[0].id)
+                                        .update({'education': _education}).then(
+                                            (value) =>
+                                                Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const MainScreen()),
+                                                    (e) => false))
+                                  });
                         }
                       },
                       child: Text(

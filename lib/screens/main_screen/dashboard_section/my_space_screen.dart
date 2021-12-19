@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SubmitQuestionSection extends StatelessWidget {
-  const SubmitQuestionSection({Key? key}) : super(key: key);
+class MySpaceScreen extends StatelessWidget {
+  const MySpaceScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
