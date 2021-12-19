@@ -1,7 +1,8 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_screen/dashboard_section/dashboard_section.dart';
+import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen.dart';
+import 'package:clover_flutter/screens/main_screen/practice_section.dart';
 import 'package:clover_flutter/screens/main_screen/profile_section.dart';
-import 'package:clover_flutter/screens/main_screen/submit_question_section.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -72,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
         }
       case (2):
         {
-          return const SubmitQuestionSection();
+          return const PracticeSection();
         }
     }
   }
@@ -127,8 +128,7 @@ class _MainScreenState extends State<MainScreen> {
                           "Dashboard", Icons.dashboard, 0),
                       _buildNavigationDrawerTile(
                           "My Profile", Icons.account_circle_rounded, 1),
-                      _buildNavigationDrawerTile(
-                          "Submit Question", Icons.help, 2),
+                      _buildNavigationDrawerTile("Practice", Icons.article, 2),
                     ],
                   ),
                 ),
@@ -140,8 +140,24 @@ class _MainScreenState extends State<MainScreen> {
                     border: Border(
                         top: BorderSide(width: 1, color: Color(0xffd4d4d4)))),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    GestureDetector(
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xffd4d4d4),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: const Icon(Icons.settings, size: 30),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SettingsScreen()));
+                      },
+                    ),
                     GestureDetector(
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -152,12 +168,49 @@ class _MainScreenState extends State<MainScreen> {
                         child: const Icon(Icons.power_settings_new, size: 30),
                       ),
                       onTap: () {
-                        _authInstance.signOut().then((value) =>
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const IntroScreen()),
-                                (e) => false));
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Text(
+                                "Do you really want to log out?",
+                                style: GoogleFonts.prompt(
+                                  textStyle: const TextStyle(fontSize: 16),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: Text(
+                                    "No",
+                                    style: GoogleFonts.prompt(
+                                      textStyle: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    "Yes",
+                                    style: GoogleFonts.prompt(
+                                      textStyle: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _authInstance.signOut().then((value) =>
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const IntroScreen()),
+                                            (e) => false));
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ],
@@ -170,8 +223,10 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: const Text("Clover"),
       ),
-      body: Container(
-        child: _getSection(_currentScreenId),
+      body: SafeArea(
+        child: Container(
+          child: _getSection(_currentScreenId),
+        ),
       ),
     );
   }

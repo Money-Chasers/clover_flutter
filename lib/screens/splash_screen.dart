@@ -1,6 +1,6 @@
-import 'dart:async';
-
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,12 +12,17 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late Timer _timer;
+  final _authInstance = FirebaseAuth.instance;
 
   _SplashScreenState() {
-    _timer = Timer(const Duration(milliseconds: 1000), () {
+    // to run something as soon as the widget gets mounted.
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const IntroScreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => _authInstance.currentUser == null
+                  ? const IntroScreen()
+                  : const MainScreen()));
     });
   }
 
@@ -51,11 +56,5 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
   }
 }

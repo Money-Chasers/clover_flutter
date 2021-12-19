@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SubmitQuestionSection extends StatelessWidget {
-  const SubmitQuestionSection({Key? key}) : super(key: key);
+class PracticeSection extends StatelessWidget {
+  const PracticeSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
