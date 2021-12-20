@@ -32,22 +32,16 @@ class _MainScreenState extends State<MainScreen> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: _currentScreenId == screenId
-                ? Theme.of(context).primaryColor
+                ? Theme.of(context).primaryColorLight
                 : Colors.transparent),
         child: Row(
           children: [
-            Icon(icon,
-                size: 40,
-                color:
-                    _currentScreenId == screenId ? Colors.white : Colors.black),
+            Icon(icon, size: 40),
             const SizedBox(width: 10),
             Text(
               text,
-              style: GoogleFonts.prompt(
-                color:
-                    _currentScreenId == screenId ? Colors.white : Colors.black,
-                textStyle: const TextStyle(fontSize: 15),
-              ),
+              style:
+                  GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 15)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -74,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: const Color(0xffd4d4d4),
+          color: Theme.of(context).primaryColorLight,
           borderRadius: BorderRadius.circular(5),
         ),
         child: Icon(icon, size: 30),

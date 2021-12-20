@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/main.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,14 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailFieldController = TextEditingController();
   final _passwordFieldController = TextEditingController();
   bool _isPasswordVisible = false;
-
-  void _showSnackBarMessage(message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
 
   _handleValidation(email, password) {
     _authInstance
@@ -58,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                 }))
         .catchError((error) {
-      _showSnackBarMessage(generateAuthExceptionString(error.hashCode));
+      showSnackBarMessage(context, generateAuthExceptionString(error.hashCode));
     });
   }
 
@@ -69,12 +63,19 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-          color: Colors.white,
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Image(image: Image.asset('assets/images/login.png').image),
+                  Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(150),
+                        color: Colors.white),
+                    child: SvgPicture.asset('assets/images/login.svg',
+                        fit: BoxFit.scaleDown),
+                  ),
                   const SizedBox(
                     height: 40,
                   ),
@@ -103,17 +104,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
                               hintText:
                                   AppLocalizations.of(context)!.enterEmail,
                               prefixIcon: const Icon(Icons.alternate_email),
                             ),
                             style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
+                                textStyle: const TextStyle(fontSize: 18)),
                           ),
                           const SizedBox(
                             height: 20,
@@ -131,7 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
                               hintText:
                                   AppLocalizations.of(context)!.enterPassword,
@@ -148,10 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
+                                textStyle: const TextStyle(fontSize: 18)),
                           ),
                           const SizedBox(
                             height: 20,

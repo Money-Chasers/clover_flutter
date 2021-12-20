@@ -5,7 +5,10 @@ import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../main.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -27,16 +30,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.createAccount),),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.createAccount),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-          color: Colors.white,
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Image(image: Image.asset('assets/images/register.png').image),
+                  Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(150),
+                        color: Colors.white),
+                    child: SvgPicture.asset('assets/images/register.svg',
+                        fit: BoxFit.scaleDown),
+                  ),
                   const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -56,13 +68,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             autofillHints: const [AutofillHints.name],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!.fieldRequired;
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
                               hintText: AppLocalizations.of(context)!.enterName,
                               prefixIcon: const Icon(Icons.person),
@@ -81,17 +96,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             autofillHints: const [AutofillHints.email],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!.fieldRequired;
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
                               } else if (!(checkEmailValid(value))) {
-                                return AppLocalizations.of(context)!.invalidEmail;
+                                return AppLocalizations.of(context)!
+                                    .invalidEmail;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
-                              hintText: AppLocalizations.of(context)!.enterEmail,
+                              hintText:
+                                  AppLocalizations.of(context)!.enterEmail,
                               prefixIcon: const Icon(Icons.alternate_email),
                             ),
                             style: GoogleFonts.prompt(
@@ -109,15 +129,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: !_isPasswordVisible,
                             validator: (value) {
                               if (value == null || value.length < 6) {
-                                return AppLocalizations.of(context)!.passwordMinLength6;
+                                return AppLocalizations.of(context)!
+                                    .passwordMinLength6;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
-                              hintText: AppLocalizations.of(context)!.createPassword,
+                              hintText:
+                                  AppLocalizations.of(context)!.createPassword,
                               prefixIcon: const Icon(Icons.password),
                               suffixIcon: InkWell(
                                 child: _isPasswordVisible

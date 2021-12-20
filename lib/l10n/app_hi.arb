@@ -27,5 +27,6 @@
   "preferences": "पसंद",
   "editProfile": "प्रोफ़ाइल संपादन",
   "chooseLanguage": "भाषा चुनें",
-  "settings": "सेटिंग्स"
+  "settings": "सेटिंग्स",
+  "darkMode": "डार्क मोड"
 }

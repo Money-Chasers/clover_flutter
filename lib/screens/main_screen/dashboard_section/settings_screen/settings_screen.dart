@@ -1,4 +1,6 @@
+import 'package:clover_flutter/main.dart';
 import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/edit_profile_screen.dart';
+import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,7 +16,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.settings),),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +113,42 @@ class SettingsScreen extends StatelessWidget {
                         const Icon(Icons.arrow_forward_ios, size: 15)
                       ],
                     ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ChooseLanguageScreen()));
+              },
+            ),
+            GestureDetector(
+              child: Container(
+                decoration: const BoxDecoration(
+                    border: Border(
+                        bottom:
+                            BorderSide(width: 1, color: Color(0xffd4d4d4)))),
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.dark_mode, size: 30),
+                        const SizedBox(width: 10),
+                        Text(AppLocalizations.of(context)!.darkMode,
+                            style: GoogleFonts.prompt(
+                                textStyle: const TextStyle(fontSize: 16)))
+                      ],
+                    ),
+                    Switch(
+                        value: MyApp.of(context)!.getDarkMode(),
+                        onChanged: (newValue) {
+                          MyApp.of(context)!.setDarkMode(newValue.toString());
+                          SharedPreferencesHelper.setDarkMode(
+                              newValue.toString());
+                        }),
                   ],
                 ),
               ),

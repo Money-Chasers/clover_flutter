@@ -22,7 +22,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('hi');
+  Locale _locale = const Locale('en');
+  bool _darkMode = false;
 
   void setLocale(Locale value) {
     setState(() {
@@ -30,13 +31,33 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  bool getDarkMode() {
+    return _darkMode;
+  }
+
+  void setDarkMode(String value) {
+    switch (value) {
+      case 'true':
+        setState(() {
+          _darkMode = true;
+        });
+        break;
+      default:
+        setState(() {
+          _darkMode = false;
+        });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Clover',
+      themeMode: _darkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
           primarySwatch: Colors.green,
           primaryColorDark: const Color(0xff084e38)),
+      darkTheme: ThemeData(brightness: Brightness.dark),
       supportedLocales: L10n.all,
       localizationsDelegates: const [
         AppLocalizations.delegate,

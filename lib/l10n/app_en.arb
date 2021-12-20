@@ -27,5 +27,6 @@
   "preferences": "PREFERENCES",
   "editProfile": "Edit profile",
   "chooseLanguage": "Choose language",
-  "settings": "Settings"
+  "settings": "Settings",
+  "darkMode": "Dark mode"
 }

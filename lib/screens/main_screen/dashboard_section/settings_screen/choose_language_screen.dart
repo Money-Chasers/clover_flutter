@@ -28,16 +28,16 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
   _buildLanguageCard(locale) {
     final _countryCode = getCountryCodeFromLanguageCode(locale);
 
-    return (GestureDetector(
+    return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
-            border: Border.all(width: 1),
+            border: Border.all(width: 1, color: Theme.of(context).backgroundColor),
             borderRadius: BorderRadius.circular(4),
             color: _selectedLocale == locale
                 ? Theme.of(context).primaryColorLight
-                : Colors.white),
+                : Colors.transparent),
         child: Row(
           children: [
             Row(
@@ -60,7 +60,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
           _selectedLocale = locale;
         });
       },
-    ));
+    );
   }
 
   @override
@@ -72,9 +72,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
           child: Column(
             children: [
               Expanded(
@@ -91,6 +89,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
               buildButton(AppLocalizations.of(context)!.confirm, () {
                 SharedPreferencesHelper.setLocale(_selectedLocale);
                 MyApp.of(context)!.setLocale(Locale(_selectedLocale));
+                Navigator.pop(context);
               })
             ],
           ),

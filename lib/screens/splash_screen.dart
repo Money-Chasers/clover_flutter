@@ -22,14 +22,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _SplashScreenState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // get language
+      // get settings
       final _future1 = SharedPreferencesHelper.getLocale();
+      final _future3 = SharedPreferencesHelper.getDarkMode();
 
       // check user authentication state
       final _future2 = _getAuthFuture();
 
       // execute all futures
-      Future.wait([_future1, _future2]).then((resultList) {
+      Future.wait([_future1, _future2, _future3]).then((resultList) {
         // first future
         MyApp.of(context)!.setLocale(Locale(resultList[0]));
 
@@ -41,6 +42,9 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const MainScreen()));
         }
+
+        //third future
+        MyApp.of(context)!.setDarkMode(resultList[2]);
       });
     });
   }
@@ -75,11 +79,8 @@ class _SplashScreenState extends State<SplashScreen> {
               Text(
                 "Clover",
                 style: GoogleFonts.oswald(
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 50,
-                    color: Theme.of(context).primaryColorDark,
-                  ),
+                  textStyle: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 50),
                 ),
                 textAlign: TextAlign.center,
               ),

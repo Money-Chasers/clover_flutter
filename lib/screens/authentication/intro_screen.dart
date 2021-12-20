@@ -3,6 +3,7 @@ import 'package:clover_flutter/screens/authentication/register_screen.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class IntroScreen extends StatelessWidget {
@@ -14,9 +15,7 @@ class IntroScreen extends StatelessWidget {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-          ),
+          decoration: const BoxDecoration(),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -24,22 +23,18 @@ class IntroScreen extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.welcome,
                   style: GoogleFonts.oswald(
-                    textStyle: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 50,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
+                    textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 50),
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(
                   height: 30,
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: Image(
-                    image: Image.asset("assets/images/questions.png").image,
-                  ),
+                Container(
+                  width: 300,height: 300,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(150), color: Colors.white),
+                  child: SvgPicture.asset('assets/images/questions.svg', fit: BoxFit.scaleDown),
                 ),
                 const SizedBox(
                   height: 10,
@@ -47,9 +42,7 @@ class IntroScreen extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)!.boostYourPreparation,
                   style: GoogleFonts.prompt(
-                    textStyle: const TextStyle(
-                      fontSize: 15,
-                    ),
+                    textStyle: const TextStyle(fontSize: 15),
                   ),
                   textAlign: TextAlign.center,
                 ),
