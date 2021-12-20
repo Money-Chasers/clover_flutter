@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final firestoreInstance = FirebaseFirestore.instance;
-  final authInstance = FirebaseAuth.instance;
+  final _authInstance = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
   final _emailFieldController = TextEditingController();
@@ -30,16 +32,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _handleValidation(email, password) {
-    firestoreInstance
-        .collection("users")
-        .where("email", isEqualTo: email)
-        .get()
-        .then((snapshot) => {
-              if (snapshot.docs.isEmpty)
-                {_showSnackBarMessage("No account exists with this email!")}
-              else if (snapshot.docs[0].data()["password"] == password)
-                {
-                  if (snapshot.docs[0].data()['education'] == "0")
+    _authInstance
+        .signInWithEmailAndPassword(email: email, password: password)
+        .then((value) => firestoreInstance
+            .collection('users')
+            .where('email', isEqualTo: email)
+            .where('education', isNotEqualTo: "0")
+            .get()
+            .then((snapshot) => {
+                  if (snapshot.docs.isEmpty)
                     {
                       Navigator.pushAndRemoveUntil(
                           context,
@@ -49,42 +50,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   else
                     {
-                      authInstance
-                          .signInWithEmailAndPassword(
-                              email: email, password: password)
-                          .then((value) => Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MainScreen()),
-                              (e) => false))
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainScreen()),
+                          (e) => false)
                     }
-                }
-              else
-                {_showSnackBarMessage("Password seems to be incorrect!")}
-            });
+                }))
+        .catchError((error) {
+      _showSnackBarMessage(generateAuthExceptionString(error.hashCode));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.login)),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
+          color: Colors.white,
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(
-                    "Just one more step!",
-                    style: GoogleFonts.oswald(
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 50,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  Image(image: Image.asset('assets/images/login.png').image),
                   const SizedBox(
                     height: 40,
                   ),
@@ -106,16 +96,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             autofillHints: const [AutofillHints.email],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "This field is required!";
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                              hintText: "Enter email",
-                              prefixIcon: Icon(Icons.alternate_email),
+                              border: const OutlineInputBorder(),
+                              hintText:
+                                  AppLocalizations.of(context)!.enterEmail,
+                              prefixIcon: const Icon(Icons.alternate_email),
                             ),
                             style: GoogleFonts.prompt(
                               textStyle: const TextStyle(
@@ -132,7 +124,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: !_isPasswordVisible,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "This field is required!";
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
                               }
                               return null;
                             },
@@ -140,7 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               filled: true,
                               fillColor: Colors.white,
                               border: const OutlineInputBorder(),
-                              hintText: "Enter password",
+                              hintText:
+                                  AppLocalizations.of(context)!.enterPassword,
                               prefixIcon: const Icon(Icons.password),
                               suffixIcon: InkWell(
                                 child: _isPasswordVisible
@@ -175,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 },
                                 child: Text(
-                                  "Log In",
+                                  AppLocalizations.of(context)!.login,
                                   style: GoogleFonts.prompt(
                                     textStyle: const TextStyle(
                                       fontSize: 18,
