@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/data_models/user_model.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
+import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../main.dart';
@@ -41,14 +41,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        color: Colors.white),
-                    child: SvgPicture.asset('assets/images/register.svg',
-                        fit: BoxFit.scaleDown),
-                  ),
+                      width: 300,
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(150),
+                          color: Colors.white),
+                      child: buildSvg('assets/images/register.svg')),
                   const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.symmetric(
@@ -112,7 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               border: const OutlineInputBorder(),
                               hintText:
                                   AppLocalizations.of(context)!.enterEmail,
-                              prefixIcon: const Icon(Icons.alternate_email),
+                              prefixIcon: const Icon(Icons.email),
                             ),
                             style: GoogleFonts.prompt(
                               textStyle: const TextStyle(
@@ -196,7 +194,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       showSnackBarMessage(
                                           context,
                                           generateAuthExceptionString(
-                                              error.hashCode));
+                                              context, error.hashCode));
                                     });
                                   }
                                 },

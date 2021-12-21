@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/main.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,7 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                 }))
         .catchError((error) {
-      showSnackBarMessage(context, generateAuthExceptionString(error.hashCode));
+      showSnackBarMessage(
+          context, generateAuthExceptionString(context, error.hashCode));
     });
   }
 
@@ -67,15 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        color: Colors.white),
-                    child: SvgPicture.asset('assets/images/login.svg',
-                        fit: BoxFit.scaleDown),
-                  ),
+                  buildSvg('assets/images/login.svg'),
                   const SizedBox(
                     height: 40,
                   ),
@@ -110,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               border: const OutlineInputBorder(),
                               hintText:
                                   AppLocalizations.of(context)!.enterEmail,
-                              prefixIcon: const Icon(Icons.alternate_email),
+                              prefixIcon: const Icon(Icons.email),
                             ),
                             style: GoogleFonts.prompt(
                                 textStyle: const TextStyle(fontSize: 18)),
@@ -152,39 +145,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: GoogleFonts.prompt(
                                 textStyle: const TextStyle(fontSize: 18)),
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          FractionallySizedBox(
-                            widthFactor: 1,
-                            child: SizedBox(
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    _handleValidation(
-                                        _emailFieldController.text,
-                                        _passwordFieldController.text);
-                                  }
-                                },
-                                child: Text(
-                                  AppLocalizations.of(context)!.login,
-                                  style: GoogleFonts.prompt(
-                                    textStyle: const TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          const SizedBox(height: 20),
+                          buildButton(AppLocalizations.of(context)!.login, () {
+                            if (_formKey.currentState!.validate()) {
+                              _handleValidation(_emailFieldController.text,
+                                  _passwordFieldController.text);
+                            }
+                          })
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  const SizedBox(height: 40),
                 ],
                 mainAxisAlignment: MainAxisAlignment.center,
               ),

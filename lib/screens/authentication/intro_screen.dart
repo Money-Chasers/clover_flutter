@@ -3,7 +3,6 @@ import 'package:clover_flutter/screens/authentication/register_screen.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class IntroScreen extends StatelessWidget {
@@ -32,10 +31,12 @@ class IntroScreen extends StatelessWidget {
                   height: 30,
                 ),
                 Container(
-                  width: 300,height: 300,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(150), color: Colors.white),
-                  child: SvgPicture.asset('assets/images/questions.svg', fit: BoxFit.scaleDown),
-                ),
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(150),
+                        color: Colors.white),
+                    child: buildSvg('assets/images/questions.svg')),
                 const SizedBox(
                   height: 10,
                 ),

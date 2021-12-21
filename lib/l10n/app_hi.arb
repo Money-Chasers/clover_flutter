@@ -25,8 +25,13 @@
   "language": "भाषा",
   "profile": "प्रोफ़ाइल",
   "preferences": "पसंद",
-  "editProfile": "प्रोफ़ाइल संपादन",
+  "accountSettings": "खाता सेटिंग्स",
   "chooseLanguage": "भाषा चुनें",
   "settings": "सेटिंग्स",
-  "darkMode": "डार्क मोड"
+  "darkMode": "डार्क मोड",
+  "basicSettings": "मूल सेटिंग्स",
+  "updateEmail": "ईमेल अपडेट करें",
+  "enterNewEmail": "नया ईमेल भरें",
+  "incorrectPassword": "पासवर्ड गलत है",
+  "emailUpdatedSuccessfully": "ईमेल सफलतापूर्वक अपडेट कर दिया गया है"
 }

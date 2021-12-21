@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 bool checkEmailValid(email) {
   return RegExp(
@@ -14,14 +15,14 @@ void showSnackBarMessage(context, message) {
   );
 }
 
-String generateAuthExceptionString(errorCode) {
+String generateAuthExceptionString(context, errorCode) {
   switch (errorCode) {
     case (34618382):
       return 'An account already exists with this email!';
     case (505284406):
       return 'No user found with this email!';
     case (185768934):
-      return 'Invalid username or password!';
+      return AppLocalizations.of(context)!.incorrectPassword;
     default:
       return 'An error occurred';
   }

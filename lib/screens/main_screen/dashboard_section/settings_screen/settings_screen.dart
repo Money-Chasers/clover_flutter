@@ -1,5 +1,6 @@
 import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/edit_profile_screen.dart';
+import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/account_settings.dart';
+import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,15 +24,8 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: Text(
-                AppLocalizations.of(context)!.profile,
-                style: GoogleFonts.prompt(
-                  textStyle: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              ),
-            ),
+            buildSettingsSectionHeader(
+                context, AppLocalizations.of(context)!.profile),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -64,10 +58,10 @@ class SettingsScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const EditProfileScreen()));
+                              builder: (context) => const AccountSettingsScreen()));
                     },
                     child: Text(
-                      AppLocalizations.of(context)!.editProfile,
+                      AppLocalizations.of(context)!.accountSettings,
                       style: GoogleFonts.prompt(
                         textStyle: const TextStyle(fontSize: 18),
                       ),
@@ -76,89 +70,53 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: Text(
-                AppLocalizations.of(context)!.preferences,
-                style: GoogleFonts.prompt(
-                  textStyle: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              ),
-            ),
-            GestureDetector(
-              child: Container(
-                decoration: const BoxDecoration(
-                    border: Border(
-                        bottom:
-                            BorderSide(width: 1, color: Color(0xffd4d4d4)))),
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            buildSettingsSectionHeader(
+                context, AppLocalizations.of(context)!.preferences),
+            buildSettingsCard(
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.language, size: 30),
-                        const SizedBox(width: 10),
-                        Text(AppLocalizations.of(context)!.language,
-                            style: GoogleFonts.prompt(
-                                textStyle: const TextStyle(fontSize: 16)))
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(AppLocalizations.of(context)!.languageName,
-                            style: GoogleFonts.prompt(
-                                textStyle: const TextStyle(fontSize: 16))),
-                        const SizedBox(width: 10),
-                        const Icon(Icons.arrow_forward_ios, size: 15)
-                      ],
-                    ),
+                    const Icon(Icons.language, size: 30),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.language,
+                        style: GoogleFonts.prompt(
+                            textStyle: const TextStyle(fontSize: 16)))
                   ],
                 ),
-              ),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ChooseLanguageScreen()));
-              },
-            ),
-            GestureDetector(
-              child: Container(
-                decoration: const BoxDecoration(
-                    border: Border(
-                        bottom:
-                            BorderSide(width: 1, color: Color(0xffd4d4d4)))),
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Row(
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.dark_mode, size: 30),
-                        const SizedBox(width: 10),
-                        Text(AppLocalizations.of(context)!.darkMode,
-                            style: GoogleFonts.prompt(
-                                textStyle: const TextStyle(fontSize: 16)))
-                      ],
-                    ),
-                    Switch(
-                        value: MyApp.of(context)!.getDarkMode(),
-                        onChanged: (newValue) {
-                          MyApp.of(context)!.setDarkMode(newValue.toString());
-                          SharedPreferencesHelper.setDarkMode(
-                              newValue.toString());
-                        }),
+                    Text(AppLocalizations.of(context)!.languageName,
+                        style: GoogleFonts.prompt(
+                            textStyle: const TextStyle(fontSize: 16))),
+                    const SizedBox(width: 10),
+                    const Icon(Icons.arrow_forward_ios, size: 15)
+                  ],
+                ), () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChooseLanguageScreen()));
+            }),
+            buildSettingsCard(
+                Row(
+                  children: [
+                    const Icon(Icons.dark_mode, size: 30),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.darkMode,
+                        style: GoogleFonts.prompt(
+                            textStyle: const TextStyle(fontSize: 16)))
                   ],
                 ),
-              ),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ChooseLanguageScreen()));
-              },
-            ),
+                Switch(
+                    value: MyApp.of(context)!.getDarkMode(),
+                    onChanged: (newValue) {
+                      MyApp.of(context)!.setDarkMode(newValue.toString());
+                      SharedPreferencesHelper.setDarkMode(newValue.toString());
+                    }), () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChooseLanguageScreen()));
+            })
           ],
         ),
       ),
