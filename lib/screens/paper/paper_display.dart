@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clover_flutter/data_models/paper_model.dart';
+import 'package:clover_flutter/service/paper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,27 +12,27 @@ class PaperDisplay extends StatefulWidget {
 }
 
 class _PaperDisplayState extends State<PaperDisplay> {
-  _buildCard(text, index) {
-    return (GestureDetector(
-      onTap: () {},
-      child: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: Theme.of(context).primaryColorLight),
-        padding: const EdgeInsets.all(10),
-        child: Text(
-          text,
-          style: GoogleFonts.prompt(fontSize: 24),
-        ),
-      ),
-    ));
+
+
+  List<PaperModel> papers = List.from([PaperModel("1", "paper1", "10", "10", ["1","2","3"], ["chem"])]);
+
+  void _toPaper(context, paper) {
+    Navigator.of(context)
+        .pushNamed("paper-attempt", arguments: paper);
   }
+
 
   @override
   Widget build(BuildContext context) {
+
+    Paper _paper = Paper();
+    _paper.initializePapersData(["organic"]);
+
     return Scaffold(
+      appBar: AppBar(
+
+        title: const Text("Papers",),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(10),
@@ -42,20 +45,25 @@ class _PaperDisplayState extends State<PaperDisplay> {
                 Expanded(
                   child: ListView(
 
-                    children: [
-                      _buildCard('Class 1', 1),
-                      _buildCard('Class 2', 2),
-                      _buildCard('Class 3', 3),
-                      _buildCard('Class 4', 4),
-                      _buildCard('Class 5', 5),
-                      _buildCard('Class 6', 6),
-                      _buildCard('Class 7', 7),
-                      _buildCard('Class 8', 8),
-                      _buildCard('Class 9', 9),
-                      _buildCard('Class 10', 10),
-                      _buildCard('Class 11', 11),
-                      _buildCard('Class 12', 12),
-                    ],
+                    // not getting data through _paper.paperDocs
+
+                    children: papers.map((paper) {
+                      return (GestureDetector(
+                        onTap: () => _toPaper(context, paper),
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Theme.of(context).primaryColorLight),
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            paper.name,
+                            style: GoogleFonts.prompt(fontSize: 24),
+                          ),
+                        ),
+                      ));
+                    }).toList(),
                   ),
                 ),
               ],
