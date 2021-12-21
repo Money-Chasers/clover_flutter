@@ -1,3 +1,4 @@
+import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/change_password_screen.dart';
 import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/update_email_screen.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,6 +50,21 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => const UpdateEmailScreen()));
+            }),
+            buildSettingsCard(
+                Row(
+                  children: [
+                    const Icon(Icons.password),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.changePassword,
+                        style: GoogleFonts.prompt(fontSize: 16))
+                  ],
+                ),
+                const Icon(Icons.arrow_forward), () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ChangePasswordScreen()));
             })
           ],
         ),

@@ -1,5 +1,9 @@
+import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/account_settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+final _authInstance = FirebaseAuth.instance;
 
 bool checkEmailValid(email) {
   return RegExp(
@@ -48,4 +52,42 @@ String getLanguageNameFromLanguageCode(languageCode) {
     default:
       return 'null';
   }
+}
+
+void updateUserEmail(context, newEmail, password) {
+  _authInstance
+      .signInWithEmailAndPassword(
+          email: _authInstance.currentUser!.email.toString(),
+          password: password)
+      .then((value) {
+    _authInstance.currentUser!.updateEmail(newEmail).then((value) {
+      showSnackBarMessage(
+          context, AppLocalizations.of(context)!.emailUpdatedSuccessfully);
+      Navigator.pop(context);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const AccountSettingsScreen()));
+    });
+  }).onError((error, stackTrace) {
+    showSnackBarMessage(
+        context, generateAuthExceptionString(context, error.hashCode));
+  });
+}
+
+void updateUserPassword(context, oldPassword, newPassword) {
+  _authInstance
+      .signInWithEmailAndPassword(
+          email: _authInstance.currentUser!.email.toString(),
+          password: oldPassword)
+      .then((value) {
+    _authInstance.currentUser!.updatePassword(newPassword).then((value) {
+      showSnackBarMessage(
+          context, AppLocalizations.of(context)!.passwordUpdatedSuccessfully);
+      Navigator.pop(context);
+    });
+  }).onError((error, stackTrace) {
+    showSnackBarMessage(
+        context, generateAuthExceptionString(context, error.hashCode));
+  });
 }

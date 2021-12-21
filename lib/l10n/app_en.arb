@@ -13,7 +13,7 @@
   "enterName": "Enter name",
   "invalidEmail": "Invalid email format",
   "passwordMinLength6": "Password must be at least 6 characters long.",
-  "createPassword": "Create a password.",
+  "createPassword": "Create a password",
   "createAccount": "Create account",
   "home": "Home",
   "trending": "Trending",
@@ -33,5 +33,9 @@
   "updateEmail": "Update email",
   "enterNewEmail": "Enter new email",
   "incorrectPassword": "Incorrect password",
-  "emailUpdatedSuccessfully": "Email updated successfully"
+  "emailUpdatedSuccessfully": "Email updated successfully",
+  "changePassword": "Change password",
+  "enterOldPassword": "Enter old password",
+  "createNewPassword": "Create new password",
+  "passwordUpdatedSuccessfully": "Password updated successfully"
 }

@@ -33,5 +33,9 @@
   "updateEmail": "ईमेल अपडेट करें",
   "enterNewEmail": "नया ईमेल भरें",
   "incorrectPassword": "पासवर्ड गलत है",
-  "emailUpdatedSuccessfully": "ईमेल सफलतापूर्वक अपडेट कर दिया गया है"
+  "emailUpdatedSuccessfully": "ईमेल सफलतापूर्वक अपडेट कर दिया गया है",
+  "changePassword": "पासवर्ड बदलें",
+  "enterOldPassword": "पुराना पासवर्ड डालें",
+  "createNewPassword": "नया पासवर्ड बनाएं",
+  "passwordUpdatedSuccessfully": "पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है"
 }
