@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/data_models/user_model.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
+import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../main.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -14,7 +19,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final firestoreInstance = FirebaseFirestore.instance;
-  final authInstance = FirebaseAuth.instance;
+  final _authInstance = FirebaseAuth.instance;
 
   final _formKey = GlobalKey<FormState>();
   final _nameFieldController = TextEditingController();
@@ -22,23 +27,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordFieldController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  bool _checkEmailValid(email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
-
-  void _showSnackBarMessage(message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.createAccount),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -46,20 +40,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(
-                    "Let's create your account!",
-                    style: GoogleFonts.oswald(
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 50,
-                        color: Theme.of(context).primaryColorDark,
-                      ),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  Container(
+                      width: 300,
+                      height: 300,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(150),
+                          color: Colors.white),
+                      child: buildSvg('assets/images/register.svg')),
+                  const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 40,
@@ -78,16 +66,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             autofillHints: const [AutofillHints.name],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "This field is required!";
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                              hintText: "Enter name",
-                              prefixIcon: Icon(Icons.person),
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                              border: const OutlineInputBorder(),
+                              hintText: AppLocalizations.of(context)!.enterName,
+                              prefixIcon: const Icon(Icons.person),
                             ),
                             style: GoogleFonts.prompt(
                               textStyle: const TextStyle(
@@ -103,18 +94,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             autofillHints: const [AutofillHints.email],
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "This field is required!";
-                              } else if (!(_checkEmailValid(value))) {
-                                return "Invalid email format";
+                                return AppLocalizations.of(context)!
+                                    .fieldRequired;
+                              } else if (!(checkEmailValid(value))) {
+                                return AppLocalizations.of(context)!
+                                    .invalidEmail;
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                              hintText: "Enter email",
-                              prefixIcon: Icon(Icons.alternate_email),
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                              border: const OutlineInputBorder(),
+                              hintText:
+                                  AppLocalizations.of(context)!.enterEmail,
+                              prefixIcon: const Icon(Icons.email),
                             ),
                             style: GoogleFonts.prompt(
                               textStyle: const TextStyle(
@@ -131,15 +127,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: !_isPasswordVisible,
                             validator: (value) {
                               if (value == null || value.length < 6) {
-                                return "Password must be at least 6 characters long!";
+                                return AppLocalizations.of(context)!
+                                    .passwordMinLength6;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
                               border: const OutlineInputBorder(),
-                              hintText: "Create a password",
+                              hintText:
+                                  AppLocalizations.of(context)!.createPassword,
                               prefixIcon: const Icon(Icons.password),
                               suffixIcon: InkWell(
                                 child: _isPasswordVisible
@@ -172,49 +172,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     var email = _emailFieldController.text;
                                     var password =
                                         _passwordFieldController.text;
-                                    firestoreInstance
-                                        .collection("users")
-                                        .where("email", isEqualTo: email)
-                                        .get()
-                                        .then((snapshot) => {
-                                              if (snapshot.docs.isEmpty)
-                                                {
-                                                  firestoreInstance
-                                                      .collection("users")
-                                                      .add(UserModel(
-                                                              name: name,
-                                                              email: email,
-                                                              password:
-                                                                  password,
-                                                              education: "0")
-                                                          .toJson())
-                                                      .then((result) => {
-                                                            authInstance
-                                                                .createUserWithEmailAndPassword(
-                                                                    email:
-                                                                        email,
-                                                                    password:
-                                                                        password)
-                                                                .then(
-                                                                    (userSession) =>
-                                                                        {
-                                                                          Navigator.pushAndRemoveUntil(
-                                                                              context,
-                                                                              MaterialPageRoute(builder: (context) => const EducationScreen()),
-                                                                              (e) => false)
-                                                                        })
-                                                          })
-                                                }
-                                              else
-                                                {
-                                                  _showSnackBarMessage(
-                                                      "An account already exists with this email.")
-                                                }
-                                            });
+                                    _authInstance
+                                        .createUserWithEmailAndPassword(
+                                            email: email, password: password)
+                                        .then((tempAuthInstance) => tempAuthInstance.user
+                                            ?.updateDisplayName(name)
+                                            .then((value) => firestoreInstance
+                                                .collection('users')
+                                                .add(UserModel(
+                                                        name: name,
+                                                        email: email,
+                                                        education: "0")
+                                                    .toJson())
+                                                .then((value) => Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const EducationScreen()),
+                                                    (e) => false))))
+                                        .onError((error, stackTrace) {
+                                      showSnackBarMessage(
+                                          context,
+                                          generateAuthExceptionString(
+                                              context, error.hashCode));
+                                    });
                                   }
                                 },
                                 child: Text(
-                                  "Create account",
+                                  AppLocalizations.of(context)!.createAccount,
                                   style: GoogleFonts.prompt(
                                     textStyle: const TextStyle(
                                       fontSize: 18,

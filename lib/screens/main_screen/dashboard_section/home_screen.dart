@@ -48,11 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Text(
               "Try these!",
               style: GoogleFonts.oswald(
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Theme.of(context).primaryColorDark,
-                ),
+                textStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
             ),
             const SizedBox(height: 10),

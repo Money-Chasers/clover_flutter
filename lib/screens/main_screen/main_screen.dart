@@ -1,10 +1,9 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_screen/dashboard_section/dashboard_section.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen.dart';
-import 'package:clover_flutter/screens/main_screen/practice_section.dart';
-import 'package:clover_flutter/screens/main_screen/profile_section.dart';
+import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/settings_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,22 +32,16 @@ class _MainScreenState extends State<MainScreen> {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
             color: _currentScreenId == screenId
-                ? Theme.of(context).primaryColor
+                ? Theme.of(context).primaryColorLight
                 : Colors.transparent),
         child: Row(
           children: [
-            Icon(icon,
-                size: 40,
-                color:
-                    _currentScreenId == screenId ? Colors.white : Colors.black),
+            Icon(icon, size: 40),
             const SizedBox(width: 10),
             Text(
               text,
-              style: GoogleFonts.prompt(
-                color:
-                    _currentScreenId == screenId ? Colors.white : Colors.black,
-                textStyle: const TextStyle(fontSize: 15),
-              ),
+              style:
+                  GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 15)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -67,15 +60,24 @@ class _MainScreenState extends State<MainScreen> {
         {
           return const DashboardSection();
         }
-      case (1):
-        {
-          return const ProfileSection();
-        }
-      case (2):
-        {
-          return const PracticeSection();
-        }
     }
+  }
+
+  _buildDrawerButton(icon, callbackFunction) {
+    return GestureDetector(
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorLight,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Icon(icon, size: 30),
+      ),
+      onTap: () {
+        Navigator.pop(context);
+        callbackFunction();
+      },
+    );
   }
 
   @override
@@ -104,19 +106,7 @@ class _MainScreenState extends State<MainScreen> {
                           image: Image.asset('assets/images/logo.png', scale: 5)
                               .image),
                     ),
-                    GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffd4d4d4),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Icon(Icons.arrow_back, size: 30),
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    _buildDrawerButton(Icons.arrow_back, () {})
                   ],
                 ),
               ),
@@ -125,10 +115,9 @@ class _MainScreenState extends State<MainScreen> {
                   child: Column(
                     children: [
                       _buildNavigationDrawerTile(
-                          "Dashboard", Icons.dashboard, 0),
-                      _buildNavigationDrawerTile(
-                          "My Profile", Icons.account_circle_rounded, 1),
-                      _buildNavigationDrawerTile("Practice", Icons.article, 2),
+                          AppLocalizations.of(context)!.dashboard,
+                          Icons.dashboard,
+                          0),
                     ],
                   ),
                 ),
@@ -142,38 +131,21 @@ class _MainScreenState extends State<MainScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffd4d4d4),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Icon(Icons.settings, size: 30),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SettingsScreen()));
-                      },
-                    ),
-                    GestureDetector(
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xffd4d4d4),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Icon(Icons.power_settings_new, size: 30),
-                      ),
-                      onTap: () {
+                    _buildDrawerButton(Icons.settings, () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsScreen()));
+                    }),
+                    _buildDrawerButton(
+                      Icons.power_settings_new,
+                      () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               content: Text(
-                                "Do you really want to log out?",
+                                AppLocalizations.of(context)!.logoutConfirm,
                                 style: GoogleFonts.prompt(
                                   textStyle: const TextStyle(fontSize: 16),
                                 ),
@@ -181,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                               actions: [
                                 TextButton(
                                   child: Text(
-                                    "No",
+                                    AppLocalizations.of(context)!.no,
                                     style: GoogleFonts.prompt(
                                       textStyle: const TextStyle(fontSize: 16),
                                     ),
@@ -192,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
                                 ),
                                 TextButton(
                                   child: Text(
-                                    "Yes",
+                                    AppLocalizations.of(context)!.yes,
                                     style: GoogleFonts.prompt(
                                       textStyle: const TextStyle(fontSize: 16),
                                     ),

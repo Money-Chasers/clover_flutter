@@ -2,6 +2,7 @@ import 'package:clover_flutter/screens/main_screen/dashboard_section/home_screen
 import 'package:clover_flutter/screens/main_screen/dashboard_section/my_space_screen.dart';
 import 'package:clover_flutter/screens/main_screen/dashboard_section/trending_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashboardSection extends StatefulWidget {
   const DashboardSection({Key? key}) : super(key: key);
@@ -29,18 +30,18 @@ class _DashboardSectionState extends State<DashboardSection> {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomNavigationCurrentIndex,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
-            label: "Trending",
+            icon: const Icon(Icons.trending_up),
+            label: AppLocalizations.of(context)!.trending,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inbox),
-            label: "My Space",
+            icon: const Icon(Icons.inbox),
+            label: AppLocalizations.of(context)!.mySpace,
           ),
         ],
         onTap: (index) {
