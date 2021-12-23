@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-  _buildCards(text) {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+
+
+  _buildCards(String text) {
     return (Container(
       padding: const EdgeInsets.all(5),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        decoration: BoxDecoration(
-            color: Color(0xffd4d4d4),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(width: 1)),
-        child: Text(
-          text,
-          style: GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 20)),
+      child: GestureDetector(
+        onTap: (){
+          Navigator.of(context).pushNamed("paper-display",arguments: [text].toList());
+        },
+        child: Container(
+          width: 150,
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          decoration: BoxDecoration(
+              color: const Color(0xffd4d4d4),
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(width: 1)),
+          child: Center(
+            child: Text(
+              text,
+              style:
+              GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 20)),
+            ),
+          ),
         ),
       ),
     ));
@@ -42,9 +58,9 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildCards('JEE ADVANCED 2021'),
-                  _buildCards('JEE ADVANCED 2020'),
-                  _buildCards('JEE ADVANCED 2019'),
+                  _buildCards('Chemistry'),
+                  _buildCards('Physics'),
+                  _buildCards('Maths'),
                 ],
               ),
             ),
@@ -54,3 +70,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+
