@@ -1,10 +1,15 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:clover_flutter/screens/main_screen/practice_section.dart';
+import 'package:clover_flutter/screens/paper/paper_attempt.dart';
 import 'package:clover_flutter/screens/paper/paper_display.dart';
+import 'package:clover_flutter/screens/paper/paper_result.dart';
 import 'package:clover_flutter/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'l10n/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -44,6 +44,7 @@ dependencies:
   shared_preferences: ^2.0.11
   country_icons: ^2.0.2
   flutter_svg: ^1.0.0
+  localize_and_translate:
 
 dev_dependencies:
   flutter_test:
