@@ -22,44 +22,43 @@ class _SplashScreenState extends State<SplashScreen> {
 
   _SplashScreenState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      // get settings
-      final _future1 = SharedPreferencesHelper.getLocale();
-      final _future3 = SharedPreferencesHelper.getDarkMode();
+      final _future1 = _getSettings();
 
-      // check user authentication state
-      final _future2 = _getAuthFuture();
-
-      // execute all futures
-      Future.wait([_future1, _future2, _future3]).then((resultList) {
-        // first future
-        MyApp.of(context)!.setLocale(Locale(resultList[0]));
-
-        // second future
-        if (resultList[1].docs.isEmpty) {
+      _future1.then((_) {
+        // handle authentication
+        if (_authInstance.currentUser == null) {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const EducationScreen()));
+              MaterialPageRoute(builder: (context) => const IntroScreen()));
         } else {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const MainScreen()));
+          _firestoreInstance
+              .collection('users')
+              .where('email', isEqualTo: _authInstance.currentUser!.email)
+              .where('education', isEqualTo: 0)
+              .get()
+              .then((value) {
+            if (value.docs.isEmpty) {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const MainScreen()));
+            } else {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EducationScreen()));
+            }
+          });
         }
-
-        //third future
-        MyApp.of(context)!.setDarkMode(resultList[2]);
       });
     });
   }
 
-  Future _getAuthFuture() {
-    if (_authInstance.currentUser == null) {
-      return Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const IntroScreen()));
-    } else {
-      return _firestoreInstance
-          .collection('users')
-          .where('email', isEqualTo: _authInstance.currentUser!.email)
-          .where('education', isNotEqualTo: 0)
-          .get();
-    }
+  Future _getSettings() {
+    final _future1 = SharedPreferencesHelper.getLocale();
+    final _future2 = SharedPreferencesHelper.getDarkMode();
+
+    return Future.wait([_future1, _future2]).then((value) {
+      MyApp.of(context)!.setLocale(Locale(value[0]));
+      MyApp.of(context)!.setDarkMode(value[1]);
+    });
   }
 
   @override
