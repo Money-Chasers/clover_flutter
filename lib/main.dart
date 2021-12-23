@@ -1,4 +1,5 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:clover_flutter/screens/main_screen/practice_section.dart';
 import 'package:clover_flutter/screens/paper/paper_attempt.dart';
 import 'package:clover_flutter/screens/paper/paper_display.dart';
 import 'package:clover_flutter/screens/paper/paper_result.dart';
@@ -22,10 +23,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.green,
           primaryColorDark: const Color(0xff084e38)),
-      home: const IntroScreen(),
+      home: const SplashScreen(),
       routes: {
+      "paper-display": (context) => const PaperDisplay(),
       "paper-attempt": (context) => const PaperAttempt(),
       "paper-result": (context) => const PaperResult(),
+      "practice-screen": (context) => const PracticeSection(),
       },
     );
   }

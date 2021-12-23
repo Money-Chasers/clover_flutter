@@ -14,7 +14,7 @@ class PaperDisplay extends StatefulWidget {
 class _PaperDisplayState extends State<PaperDisplay> {
 
 
-  List<PaperModel> papers = List.from([PaperModel("1", "paper1", "10", "10", ["1","2","3"], ["chem"])]);
+  //List<PaperModel> papers = List.from([PaperModel("1", "paper1", "10", "10", ["1","2","3"], ["chem"])]);
 
   void _toPaper(context, paper) {
     Navigator.of(context)
@@ -25,8 +25,12 @@ class _PaperDisplayState extends State<PaperDisplay> {
   @override
   Widget build(BuildContext context) {
 
-    Paper _paper = Paper();
-    _paper.initializePapersData(["organic"]);
+    List<String?> paperTags = ModalRoute.of(context)!.settings.arguments as List<String?>;
+
+    List<DocumentSnapshot?> papers = Paper().getPapers(paperTags) as List<DocumentSnapshot<Object?>?>;
+
+    // Paper _paper = Paper();
+    // _paper.initializePapersData(["organic"]);
 
     return Scaffold(
       appBar: AppBar(
@@ -48,6 +52,8 @@ class _PaperDisplayState extends State<PaperDisplay> {
                     // not getting data through _paper.paperDocs
 
                     children: papers.map((paper) {
+                      PaperModel? p = paper!.data() as PaperModel?;
+
                       return (GestureDetector(
                         onTap: () => _toPaper(context, paper),
                         child: Container(
@@ -58,7 +64,7 @@ class _PaperDisplayState extends State<PaperDisplay> {
                               color: Theme.of(context).primaryColorLight),
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            paper.name,
+                            p!.name,
                             style: GoogleFonts.prompt(fontSize: 24),
                           ),
                         ),

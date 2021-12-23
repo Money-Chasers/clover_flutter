@@ -1,6 +1,5 @@
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/paper/paper_display.dart';
-import 'package:clover_flutter/service/paper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +19,7 @@ class _PaperAttemptState extends State<PaperAttempt> {
     final PaperModel? paper =
         ModalRoute.of(context)!.settings.arguments as PaperModel?;
 
-    //Paper().initializeQuestions(paper!.questionIds);
+
 
     List<QuestionModel> questions = List.from([QuestionModel("1", ["chemistry","easy","atoms"], "Electrons are _ charged.", ["negative"], ["positive","neutral","none"])]);
     questions.add(QuestionModel("2", ["chemistry","easy","atoms"], "Protons are _ charged.", ["positive"], ["negative","neutral","none"]));
