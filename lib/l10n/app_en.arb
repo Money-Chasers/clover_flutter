@@ -37,5 +37,14 @@
   "changePassword": "Change password",
   "enterOldPassword": "Enter old password",
   "createNewPassword": "Create new password",
-  "passwordUpdatedSuccessfully": "Password updated successfully"
+  "passwordUpdatedSuccessfully": "Password updated successfully",
+  "submitQuestions": "Submit questions",
+  "proceed": "Proceed",
+  "enterTitle": "Enter title",
+  "enterNumberOfQuestion": "Enter number of questions",
+  "selectTagsForQuestion": "Select tags for question (optional)",
+  "paperDetails": "Question paper details",
+  "questionDetails": "Question details",
+  "enterQuestionText": "Enter question",
+  "enterOptionText": "Enter option"
 }

@@ -64,7 +64,7 @@ class _PaperDisplayState extends State<PaperDisplay> {
                               color: Theme.of(context).primaryColorLight),
                           padding: const EdgeInsets.all(10),
                           child: Text(
-                            p!.name,
+                            p!.paperTitle,
                             style: GoogleFonts.prompt(fontSize: 24),
                           ),
                         ),

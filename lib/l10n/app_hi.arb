@@ -37,5 +37,14 @@
   "changePassword": "पासवर्ड बदलें",
   "enterOldPassword": "पुराना पासवर्ड डालें",
   "createNewPassword": "नया पासवर्ड बनाएं",
-  "passwordUpdatedSuccessfully": "पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है"
+  "passwordUpdatedSuccessfully": "पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है",
+  "submitQuestions": "प्रश्न सबमिट करें",
+  "proceed": "आगे बढ़ें",
+  "enterTitle": "शीर्षक भरें",
+  "enterNumberOfQuestion": "प्रश्नों की संख्या भरें",
+  "selectTagsForQuestion": "प्रश्न के लिए टैग चुनें (वैकल्पिक)",
+  "paperDetails": "प्रश्न पत्र विवरण",
+  "questionDetails": "प्रश्न का विवरण",
+  "enterQuestionText": "प्रश्न भरें",
+  "enterOptionText": "विकल्प भरें"
 }

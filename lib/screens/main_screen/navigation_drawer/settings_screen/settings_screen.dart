@@ -1,5 +1,4 @@
 import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/account_settings.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'account_settings.dart';
 import 'choose_language_screen.dart';
 
 class SettingsScreen extends StatelessWidget {

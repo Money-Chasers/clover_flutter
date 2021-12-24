@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/account_settings.dart';
+import 'package:clover_flutter/screens/main_screen/navigation_drawer/settings_screen/account_settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

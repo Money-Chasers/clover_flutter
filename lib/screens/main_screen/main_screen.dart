@@ -1,10 +1,12 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/dashboard_section.dart';
-import 'package:clover_flutter/screens/main_screen/dashboard_section/settings_screen/settings_screen.dart';
+import 'package:clover_flutter/screens/main_screen/submit_questions_section/paper_details_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'navigation_drawer/dashboard_section/dashboard_section.dart';
+import 'navigation_drawer/settings_screen/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -54,12 +56,21 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget? _getSection(screenId) {
+  _handleScaffoldTitleFetch(screenId) {
     switch (screenId) {
       case (0):
-        {
-          return const DashboardSection();
-        }
+        return AppLocalizations.of(context)!.dashboard;
+      case (1):
+        return AppLocalizations.of(context)!.paperDetails;
+    }
+  }
+
+  _handleSectionFetch(screenId) {
+    switch (screenId) {
+      case (0):
+        return const DashboardSection();
+      case (1):
+        return const PaperDetailsScreen();
     }
   }
 
@@ -83,6 +94,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(_handleScaffoldTitleFetch(_currentScreenId)),
+      ),
       drawer: SafeArea(
         child: Drawer(
           child: Column(
@@ -118,6 +132,10 @@ class _MainScreenState extends State<MainScreen> {
                           AppLocalizations.of(context)!.dashboard,
                           Icons.dashboard,
                           0),
+                      _buildNavigationDrawerTile(
+                          AppLocalizations.of(context)!.submitQuestions,
+                          Icons.question_answer,
+                          1),
                     ],
                   ),
                 ),
@@ -192,12 +210,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      appBar: AppBar(
-        title: const Text("Clover"),
-      ),
       body: SafeArea(
         child: Container(
-          child: _getSection(_currentScreenId),
+          child: _handleSectionFetch(_currentScreenId),
         ),
       ),
     );

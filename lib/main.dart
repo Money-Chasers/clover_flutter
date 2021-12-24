@@ -1,13 +1,9 @@
-import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_screen/practice_section.dart';
-import 'package:clover_flutter/screens/paper/paper_attempt.dart';
-import 'package:clover_flutter/screens/paper/paper_display.dart';
-import 'package:clover_flutter/screens/paper/paper_result.dart';
 import 'package:clover_flutter/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'l10n/l10n.dart';
 
@@ -58,26 +54,21 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Clover',
-      themeMode: _darkMode ? ThemeMode.dark : ThemeMode.light,
-      theme: ThemeData(
+        title: 'Clover',
+        themeMode: _darkMode ? ThemeMode.dark : ThemeMode.light,
+        theme: ThemeData(
           primarySwatch: Colors.green,
-          primaryColorDark: const Color(0xff084e38)),
-      darkTheme: ThemeData(brightness: Brightness.dark),
-      supportedLocales: L10n.all,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: _locale,
-      home: const SplashScreen(),
-      routes: {
-        "paper-display": (context) => const PaperDisplay(),
-        "paper-attempt": (context) => const PaperAttempt(),
-        "paper-result": (context) => const PaperResult(),
-        "practice-screen": (context) => const PracticeSection(),
-      },
-    );
+          primaryColorDark: const Color(0xff084e38),
+          textTheme: GoogleFonts.latoTextTheme(),
+        ),
+        darkTheme: ThemeData(brightness: Brightness.dark),
+        supportedLocales: L10n.all,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: _locale,
+        home: const SplashScreen());
   }
 }
