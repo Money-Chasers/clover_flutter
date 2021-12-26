@@ -8,7 +8,7 @@ import '../../../main.dart';
 
 class QuestionDetailsScreen extends StatefulWidget {
   final String title;
-  final String nQuestions;
+  final int nQuestions;
 
   const QuestionDetailsScreen(
       {Key? key, required this.title, required this.nQuestions})
@@ -20,83 +20,72 @@ class QuestionDetailsScreen extends StatefulWidget {
 
 class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _questionFieldController = TextEditingController();
-  List<String> _selectedTags = [];
-  List<QuestionOption> _optionsList = [];
-  List<QuestionModel> _fullQuestionList = [];
+  List<QuestionModel> _allQuestionModels = [];
+  final TextEditingController _controller = TextEditingController();
 
   int _currentQuestionIndex = 0;
 
-  _QuestionDetailsScreenState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      _fullQuestionList =
-          List.filled(int.parse(widget.nQuestions), QuestionModel('', [], []));
-    });
+  List<Widget> _buildQuestionOptions(int index) {
+    return _getQuestionModel(_currentQuestionIndex)
+        .options
+        .map((e) => Option(state: e))
+        .toList();
   }
 
-  void _recordState() {
-    final _optionModelList = _optionsList
-        .map((element) => OptionModel(element.text, element.isCorrectOption))
-        .toList(growable: false);
-    _fullQuestionList[_currentQuestionIndex] = QuestionModel(
-        _questionFieldController.text, _optionModelList, _selectedTags);
-  }
-
-  _handleForwardButtonPress() {
+  void _handleForwardButtonPress() {
     if (_formKey.currentState!.validate()) {
-      if (_currentQuestionIndex < int.parse(widget.nQuestions) - 1) {
-        _recordState();
+      if (_currentQuestionIndex < widget.nQuestions - 1) {
         setState(() {
           _currentQuestionIndex += 1;
+          _controller.text =
+              _getQuestionModel(_currentQuestionIndex).questionText;
         });
-        initState();
       } else {
         // if last question
       }
     }
   }
 
-  _handleBackButtonPress() {
+  void _handleBackButtonPress() {
     if (_currentQuestionIndex > 0) {
-      _recordState();
       setState(() {
         _currentQuestionIndex -= 1;
+        _controller.text =
+            _getQuestionModel(_currentQuestionIndex).questionText;
       });
-      initState();
     }
+  }
+
+  QuestionModel _getQuestionModel(int index) {
+    return _allQuestionModels.isNotEmpty
+        ? _allQuestionModels[index]
+        : QuestionModel('', [], []);
   }
 
   void _eraseState() {
-    _fullQuestionList[_currentQuestionIndex] = QuestionModel('', [], []);
-    initState();
+    setState(() {
+      _allQuestionModels[_currentQuestionIndex] = QuestionModel('', [], []);
+      _controller.text = '';
+    });
   }
 
-  @override
-  void initState() {
-    if (_fullQuestionList.isNotEmpty) {
-      setState(() {
-        _questionFieldController.text =
-            _fullQuestionList[_currentQuestionIndex].questionText;
-        _selectedTags.clear();
-        // _selectedTags = _fullQuestionList[_currentQuestionIndex].questionTags
-        //     as List<String>;
-        _optionsList =
-            _fullQuestionList[_currentQuestionIndex].options.map((element) {
-          final tempQuestionOption = QuestionOption();
-          tempQuestionOption.text = element.text;
-          tempQuestionOption.isCorrectOption = element.isCorrect;
-          return tempQuestionOption;
-        }).toList(growable: false);
-      });
-    }
-    super.initState();
-  }
-
-  _buildButton(icon, callbackFunction) {
+  Widget _buildButton(icon, callbackFunction) {
     return InkWell(
       child: Icon(icon, size: 30),
       onTap: callbackFunction,
     );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      final List<QuestionModel> _tempList = [];
+      for (var i = 0; i < widget.nQuestions; i++) {
+        _tempList.add(QuestionModel('', [], []));
+      }
+      _allQuestionModels = _tempList;
+    });
+    super.initState();
   }
 
   @override
@@ -120,7 +109,13 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
                     child: Column(
                       children: [
                         TextFormField(
-                            controller: _questionFieldController,
+                            controller: _controller,
+                            onChanged: (value) {
+                              setState(() {
+                                _getQuestionModel(_currentQuestionIndex)
+                                    .questionText = value;
+                              });
+                            },
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return AppLocalizations.of(context)!
@@ -138,21 +133,37 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
                                 prefixIcon: const Icon(Icons.short_text)),
                             minLines: 6,
                             maxLines: 6),
-                        if (_optionsList.isNotEmpty) const SizedBox(height: 20),
-                        ..._optionsList,
+                        if (_getQuestionModel(_currentQuestionIndex)
+                            .options
+                            .isNotEmpty)
+                          const SizedBox(height: 20),
+                        ..._buildQuestionOptions(_currentQuestionIndex),
                         const SizedBox(height: 20),
-                        if (_optionsList.length < 6)
+                        if (_getQuestionModel(_currentQuestionIndex)
+                                .options
+                                .length <
+                            6)
                           MaterialButton(
                               onPressed: () {
+                                final List<OptionModel> _tempListShort =
+                                    List.from(
+                                        _getQuestionModel(_currentQuestionIndex)
+                                            .options);
+                                _tempListShort.add(OptionModel('', false));
                                 setState(() {
-                                  _optionsList.add(QuestionOption());
+                                  _getQuestionModel(_currentQuestionIndex)
+                                      .options = _tempListShort;
                                 });
                               },
                               color: Theme.of(context).primaryColor,
                               child: const Icon(Icons.add, size: 30),
                               padding: const EdgeInsets.all(10),
                               shape: const CircleBorder()),
-                        if (_optionsList.length < 6) const SizedBox(height: 20)
+                        if (_getQuestionModel(_currentQuestionIndex)
+                                .options
+                                .length <
+                            6)
+                          const SizedBox(height: 20)
                       ],
                     ),
                   ),
@@ -162,7 +173,7 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
               DropdownSearch<String>.multiSelection(
                   mode: Mode.MENU,
                   showSearchBox: true,
-                  items: QUESTION_TAGS,
+                  items: questionTags,
                   dropdownSearchDecoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       hintText:
@@ -172,10 +183,15 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
                           ? Theme.of(context).primaryColor
                           : Colors.white,
                       prefixIcon: const Icon(Icons.label)),
-                  selectedItems: _selectedTags,
+                  selectedItems:
+                      _getQuestionModel(_currentQuestionIndex).questionTags,
                   onChanged: (selectedItems) {
+                    List<String> _tempListShort = List.from(
+                        _getQuestionModel(_currentQuestionIndex).questionTags);
+                    _tempListShort = selectedItems;
                     setState(() {
-                      _selectedTags = selectedItems;
+                      _getQuestionModel(_currentQuestionIndex).questionTags =
+                          _tempListShort;
                     });
                   }),
               const SizedBox(height: 20),
@@ -187,7 +203,7 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
                   Expanded(
                       child: LinearProgressIndicator(
                           value: (_currentQuestionIndex + 1) /
-                              (int.parse(widget.nQuestions)))),
+                              (widget.nQuestions))),
                   const SizedBox(width: 10),
                   _buildButton(
                       Icons.arrow_forward_ios, _handleForwardButtonPress),
@@ -201,17 +217,16 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
   }
 }
 
-class QuestionOption extends StatefulWidget {
-  bool isCorrectOption = false;
-  String text = '';
+class Option extends StatefulWidget {
+  final OptionModel state;
 
-  QuestionOption({Key? key}) : super(key: key);
+  const Option({Key? key, required this.state}) : super(key: key);
 
   @override
-  State<QuestionOption> createState() => _QuestionOptionState();
+  State<Option> createState() => _OptionState();
 }
 
-class _QuestionOptionState extends State<QuestionOption> {
+class _OptionState extends State<Option> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -222,10 +237,10 @@ class _QuestionOptionState extends State<QuestionOption> {
         children: [
           Expanded(
               child: TextFormField(
-                  initialValue: widget.text,
+                  initialValue: widget.state.text,
                   onChanged: (value) {
                     setState(() {
-                      widget.text = value;
+                      widget.state.text = value;
                     });
                   },
                   validator: (value) {
@@ -258,10 +273,10 @@ class _QuestionOptionState extends State<QuestionOption> {
                       radius: 18,
                       child: const Icon(Icons.check),
                       backgroundColor:
-                          widget.isCorrectOption ? Colors.green : Colors.grey),
+                          widget.state.isCorrect ? Colors.green : Colors.grey),
                   onTap: () {
                     setState(() {
-                      widget.isCorrectOption = true;
+                      widget.state.isCorrect = true;
                     });
                   },
                 ),
@@ -270,11 +285,11 @@ class _QuestionOptionState extends State<QuestionOption> {
                   child: CircleAvatar(
                       radius: 18,
                       backgroundColor:
-                          widget.isCorrectOption ? Colors.grey : Colors.red,
+                          widget.state.isCorrect ? Colors.grey : Colors.red,
                       child: const Icon(Icons.close)),
                   onTap: () {
                     setState(() {
-                      widget.isCorrectOption = false;
+                      widget.state.isCorrect = false;
                     });
                   },
                 )

@@ -1,4 +1,4 @@
-final List<String> QUESTION_TAGS = [
+const List<String> questionTags = [
   'electrochemistry',
   'permutations and combinations',
 ];

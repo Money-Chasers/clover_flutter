@@ -1,7 +1,7 @@
 class QuestionModel {
   String questionText;
   List<OptionModel> options;
-  List<String?> questionTags;
+  List<String> questionTags;
 
   QuestionModel(this.questionText, this.options, this.questionTags);
 
