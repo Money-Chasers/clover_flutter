@@ -46,5 +46,6 @@
   "paperDetails": "Question paper details",
   "questionDetails": "Question details",
   "enterQuestionText": "Enter question",
-  "enterOptionText": "Enter option"
+  "enterOptionText": "Enter option",
+  "questionPaperSummary": "Question paper summary"
 }

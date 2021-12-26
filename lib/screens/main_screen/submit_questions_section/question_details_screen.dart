@@ -1,4 +1,5 @@
 import 'package:clover_flutter/data_models/question_model.dart';
+import 'package:clover_flutter/screens/main_screen/submit_questions_section/paper_summary_screen.dart';
 import 'package:clover_flutter/utils/constant_values.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +8,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../main.dart';
 
 class QuestionDetailsScreen extends StatefulWidget {
-  final String title;
+  final String paperTitle;
   final int nQuestions;
 
   const QuestionDetailsScreen(
-      {Key? key, required this.title, required this.nQuestions})
+      {Key? key, required this.paperTitle, required this.nQuestions})
       : super(key: key);
 
   @override
@@ -42,6 +43,12 @@ class _QuestionDetailsScreenState extends State<QuestionDetailsScreen> {
         });
       } else {
         // if last question
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PaperSummaryScreen(
+                    allQuestionModels: _allQuestionModels,
+                    paperTitle: widget.paperTitle)));
       }
     }
   }

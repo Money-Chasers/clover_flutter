@@ -46,5 +46,6 @@
   "paperDetails": "प्रश्न पत्र विवरण",
   "questionDetails": "प्रश्न का विवरण",
   "enterQuestionText": "प्रश्न भरें",
-  "enterOptionText": "विकल्प भरें"
+  "enterOptionText": "विकल्प भरें",
+  "questionPaperSummary": "प्रश्न पत्र सारांश"
 }

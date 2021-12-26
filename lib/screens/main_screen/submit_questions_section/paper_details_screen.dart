@@ -22,7 +22,7 @@ class _PaperDetailsScreenState extends State<PaperDetailsScreen> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                QuestionDetailsScreen(title: title, nQuestions: int.parse(nQuestions))));
+                QuestionDetailsScreen(paperTitle: title, nQuestions: int.parse(nQuestions))));
   }
 
   @override
