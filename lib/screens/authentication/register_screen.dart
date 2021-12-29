@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/data_models/user_model.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,9 +16,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final firestoreInstance = FirebaseFirestore.instance;
-  final _authInstance = FirebaseAuth.instance;
-
   final _formKey = GlobalKey<FormState>();
   final _nameFieldController = TextEditingController();
   final _emailFieldController = TextEditingController();
@@ -38,30 +33,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.all(20),
           child: Center(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                      width: 300,
-                      height: 300,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(150),
-                          color: Colors.white),
-                      child: buildSvg('assets/images/register.svg')),
-                  const SizedBox(height: 40),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 40,
-                      horizontal: 20,
-                    ),
+              child: Column(children: [
+                Container(
+                    width: 300,
+                    height: 300,
                     decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(150),
+                        color: Colors.white),
+                    child: buildSvg('assets/images/register.svg')),
+                const SizedBox(height: 40),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 40,
+                    horizontal: 20,
+                  ),
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
+                      color: Theme.of(context).primaryColorLight),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
                             controller: _nameFieldController,
                             autofillHints: const [AutofillHints.name],
                             validator: (value) {
@@ -81,15 +74,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               prefixIcon: const Icon(Icons.person),
                             ),
                             style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
+                                textStyle: const TextStyle(fontSize: 18))),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
                             controller: _emailFieldController,
                             autofillHints: const [AutofillHints.email],
                             validator: (value) {
@@ -113,112 +102,91 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               prefixIcon: const Icon(Icons.email),
                             ),
                             style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                              ),
+                                textStyle: const TextStyle(fontSize: 18))),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: _passwordFieldController,
+                          autofillHints: const [AutofillHints.newPassword],
+                          obscureText: !_isPasswordVisible,
+                          validator: (value) {
+                            if (value == null || value.length < 6) {
+                              return AppLocalizations.of(context)!
+                                  .passwordMinLength6;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: MyApp.of(context)!.getDarkMode()
+                                ? Theme.of(context).primaryColor
+                                : Colors.white,
+                            border: const OutlineInputBorder(),
+                            hintText:
+                                AppLocalizations.of(context)!.createPassword,
+                            prefixIcon: const Icon(Icons.password),
+                            suffixIcon: InkWell(
+                              child: _isPasswordVisible
+                                  ? const Icon(Icons.visibility)
+                                  : const Icon(Icons.visibility_off),
+                              onTap: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
                             ),
                           ),
-                          const SizedBox(
-                            height: 20,
+                          style: GoogleFonts.prompt(
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                            ),
                           ),
-                          TextFormField(
-                            controller: _passwordFieldController,
-                            autofillHints: const [AutofillHints.newPassword],
-                            obscureText: !_isPasswordVisible,
-                            validator: (value) {
-                              if (value == null || value.length < 6) {
-                                return AppLocalizations.of(context)!
-                                    .passwordMinLength6;
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: MyApp.of(context)!.getDarkMode()
-                                  ? Theme.of(context).primaryColor
-                                  : Colors.white,
-                              border: const OutlineInputBorder(),
-                              hintText:
-                                  AppLocalizations.of(context)!.createPassword,
-                              prefixIcon: const Icon(Icons.password),
-                              suffixIcon: InkWell(
-                                child: _isPasswordVisible
-                                    ? const Icon(Icons.visibility)
-                                    : const Icon(Icons.visibility_off),
-                                onTap: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: 1,
+                          child: SizedBox(
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  BackendHelper.createUserWithEmailAndPassword(
+                                          _nameFieldController.text,
+                                          _emailFieldController.text,
+                                          _passwordFieldController.text)
+                                      .then((value) {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const EducationScreen()),
+                                        (route) => false);
+                                  }).catchError((error) {
+                                    buildSnackBarMessage(
+                                        context,
+                                        AppLocalizations.of(context)!
+                                            .anErrorOccurred);
                                   });
-                                },
-                              ),
-                            ),
-                            style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          FractionallySizedBox(
-                            widthFactor: 1,
-                            child: SizedBox(
-                              height: 50,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    var name = _nameFieldController.text;
-                                    var email = _emailFieldController.text;
-                                    var password =
-                                        _passwordFieldController.text;
-                                    _authInstance
-                                        .createUserWithEmailAndPassword(
-                                            email: email, password: password)
-                                        .then((tempAuthInstance) => tempAuthInstance.user
-                                            ?.updateDisplayName(name)
-                                            .then((value) => firestoreInstance
-                                                .collection('users')
-                                                .add(UserModel(
-                                                        name: name,
-                                                        email: email,
-                                                        education: "0")
-                                                    .toJson())
-                                                .then((value) => Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const EducationScreen()),
-                                                    (e) => false))))
-                                        .onError((error, stackTrace) {
-                                      showSnackBarMessage(
-                                          context,
-                                          generateAuthExceptionString(
-                                              context, error.hashCode));
-                                    });
-                                  }
-                                },
-                                child: Text(
-                                  AppLocalizations.of(context)!.createAccount,
-                                  style: GoogleFonts.prompt(
-                                    textStyle: const TextStyle(
-                                      fontSize: 18,
-                                    ),
-                                  ),
+                                }
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.createAccount,
+                                style: GoogleFonts.prompt(
+                                  textStyle: const TextStyle(fontSize: 18),
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                ],
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
+                ),
+                const SizedBox(height: 40),
+              ], mainAxisAlignment: MainAxisAlignment.center),
             ),
           ),
         ),

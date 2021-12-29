@@ -47,5 +47,6 @@
   "questionDetails": "Question details",
   "enterQuestionText": "Enter question",
   "enterOptionText": "Enter option",
-  "questionPaperSummary": "Question paper summary"
+  "questionPaperSummary": "Question paper summary",
+  "anErrorOccurred": "An error occurred, please try again later."
 }

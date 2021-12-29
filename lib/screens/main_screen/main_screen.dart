@@ -1,6 +1,6 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_screen/submit_questions_section/paper_details_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,8 +16,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final _authInstance = FirebaseAuth.instance;
-
   int _currentScreenId = 0;
 
   void _setScreenId(newId) {
@@ -181,22 +179,27 @@ class _MainScreenState extends State<MainScreen> {
                                   },
                                 ),
                                 TextButton(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.yes,
-                                    style: GoogleFonts.prompt(
-                                      textStyle: const TextStyle(fontSize: 16),
+                                    child: Text(
+                                      AppLocalizations.of(context)!.yes,
+                                      style: GoogleFonts.prompt(
+                                        textStyle:
+                                            const TextStyle(fontSize: 16),
+                                      ),
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    _authInstance.signOut().then((value) =>
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const IntroScreen()),
-                                            (e) => false));
-                                  },
-                                ),
+                                    onPressed: () async {
+                                      final checkValue =
+                                          await BackendHelper.signOut();
+                                      if (checkValue != null) {
+                                        if (checkValue) {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const IntroScreen()),
+                                              (route) => false);
+                                        }
+                                      }
+                                    }),
                               ],
                             );
                           },

@@ -17,6 +17,12 @@ buildButton(text, callbackFunction) {
   );
 }
 
+buildSnackBarMessage(context, message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
+
 buildSvg(svgPath) {
   return Container(
     width: 300,

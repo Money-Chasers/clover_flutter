@@ -1,5 +1,5 @@
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
-import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -114,12 +114,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ),
                         const SizedBox(height: 20),
                         buildButton(
-                            AppLocalizations.of(context)!.changePassword, () {
+                            AppLocalizations.of(context)!.changePassword,
+                            () async {
                           if (_formKey.currentState!.validate()) {
-                            updateUserPassword(
-                                context,
-                                _oldPasswordFieldController.text,
-                                _newPasswordFieldController.text);
+                            final checkValue =
+                                await BackendHelper.updateUserPassword(
+                                    _oldPasswordFieldController.text,
+                                    _newPasswordFieldController.text);
+                            if (checkValue != null) {
+                              if (checkValue) {
+                                Navigator.pop(context);
+                                buildSnackBarMessage(
+                                    context,
+                                    AppLocalizations.of(context)!
+                                        .passwordUpdatedSuccessfully);
+                              }
+                            } else {
+                              buildSnackBarMessage(
+                                  context,
+                                  AppLocalizations.of(context)!
+                                      .anErrorOccurred);
+                            }
                           }
                         })
                       ],

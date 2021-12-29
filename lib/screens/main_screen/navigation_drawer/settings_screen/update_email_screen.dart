@@ -1,3 +1,4 @@
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -102,8 +103,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                         buildButton(AppLocalizations.of(context)!.updateEmail,
                             () {
                           if (_formKey.currentState!.validate()) {
-                            updateUserEmail(
-                                context,
+                            BackendHelper.updateUserEmail(
                                 _newEmailFieldController.text,
                                 _passwordFieldController.text);
                           }

@@ -1,7 +1,7 @@
 class UserModel {
   String name;
   String email;
-  String education;
+  num education;
 
   UserModel({required this.name, required this.email, required this.education});
 

@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/data_models/question_model.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,35 +18,17 @@ class PaperSummaryScreen extends StatefulWidget {
 }
 
 class _PaperSummaryScreenState extends State<PaperSummaryScreen> {
-  final _firestoreInstance = FirebaseFirestore.instance;
-
-  void _submitQuestionPaper() {
-    final _batchQuestions = _firestoreInstance.batch();
-    final List<String> _questionIds = [];
-    final _tagsUnion = <String>{};
-    for (var element in widget.allQuestionModels) {
-      var docRef = _firestoreInstance.collection("questions").doc();
-      _questionIds.add(docRef.id);
-      _tagsUnion.union(element.questionTags.toSet());
-      _batchQuestions.set(
-          docRef,
-          QuestionModel(
-                  element.questionText, element.options, element.questionTags)
-              .toJson());
-    }
-    _batchQuestions.commit().then((_) {
-      _firestoreInstance
-          .collection('questionPapers')
-          .add(PaperModel(widget.paperTitle, _questionIds,
-                  _tagsUnion.toList(growable: false))
-              .toJson())
-          .then((value) {
+  void _submitQuestionPaper() async {
+    final checkValue = await BackendHelper.addQuestionPaper(
+        widget.paperTitle, widget.allQuestionModels);
+    if (checkValue != null) {
+      if (checkValue) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const MainScreen()),
             (route) => false);
-      });
-    });
+      }
+    }
   }
 
   List<Widget> _buildQuestionCards(List<QuestionModel> questionModels) {

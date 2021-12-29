@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/main.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
-import 'package:clover_flutter/utils/helper_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,43 +15,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final firestoreInstance = FirebaseFirestore.instance;
-  final _authInstance = FirebaseAuth.instance;
-
   final _formKey = GlobalKey<FormState>();
   final _emailFieldController = TextEditingController();
   final _passwordFieldController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  _handleValidation(email, password) {
-    _authInstance
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((value) => firestoreInstance
-            .collection('users')
-            .where('email', isEqualTo: email)
-            .where('education', isNotEqualTo: "0")
-            .get()
-            .then((snapshot) => {
-                  if (snapshot.docs.isEmpty)
-                    {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const EducationScreen()),
-                          (e) => false)
-                    }
-                  else
-                    {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MainScreen()),
-                          (e) => false)
-                    }
-                }))
-        .catchError((error) {
-      showSnackBarMessage(
-          context, generateAuthExceptionString(context, error.hashCode));
+  _handleValidation(email, password) async {
+    BackendHelper.signInWithEmailAndPassword(email, password).then((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const EducationScreen()),
+            (route) => false);
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+            (route) => false);
+      }
+    }).catchError((error) {
+      buildSnackBarMessage(
+          context, AppLocalizations.of(context)!.anErrorOccurred);
     });
   }
 
@@ -69,9 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   buildSvg('assets/images/login.svg'),
-                  const SizedBox(
-                    height: 40,
-                  ),
+                  const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 40,
