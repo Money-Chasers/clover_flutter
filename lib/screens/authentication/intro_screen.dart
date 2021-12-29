@@ -14,19 +14,13 @@ class IntroScreen extends StatelessWidget {
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  AppLocalizations.of(context)!.welcome,
-                  style: GoogleFonts.oswald(
-                    textStyle: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 50),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+                Text(AppLocalizations.of(context)!.welcome,
+                    style: GoogleFonts.oswald(
+                        textStyle: Theme.of(context).textTheme.headline2)),
                 const SizedBox(
                   height: 30,
                 ),
@@ -40,25 +34,18 @@ class IntroScreen extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
-                  AppLocalizations.of(context)!.boostYourPreparation,
-                  style: GoogleFonts.prompt(
-                    textStyle: const TextStyle(fontSize: 15),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                Text(AppLocalizations.of(context)!.boostYourPreparation,
+                    style: Theme.of(context).textTheme.subtitle2,
+                    textAlign: TextAlign.center),
+                const SizedBox(height: 20),
                 buildButton(
+                  context,
                   AppLocalizations.of(context)!.login,
                   () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
                   },
                 ),
                 const SizedBox(
@@ -73,15 +60,9 @@ class IntroScreen extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    AppLocalizations.of(context)!.dontHaveAnAccount,
-                    style: GoogleFonts.prompt(
-                      textStyle: const TextStyle(
-                        fontSize: 15,
-                      ),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(AppLocalizations.of(context)!.dontHaveAnAccount,
+                      style: Theme.of(context).textTheme.subtitle2,
+                      textAlign: TextAlign.center),
                 )
               ],
             ),

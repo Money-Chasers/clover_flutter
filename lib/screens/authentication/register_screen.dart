@@ -4,7 +4,6 @@ import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../main.dart';
 
@@ -25,9 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.createAccount),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.createAccount)),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -73,11 +70,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               hintText: AppLocalizations.of(context)!.enterName,
                               prefixIcon: const Icon(Icons.person),
                             ),
-                            style: GoogleFonts.prompt(
-                                textStyle: const TextStyle(fontSize: 18))),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                            style: Theme.of(context).textTheme.subtitle2),
+                        const SizedBox(height: 20),
                         TextFormField(
                             controller: _emailFieldController,
                             autofillHints: const [AutofillHints.email],
@@ -101,57 +95,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   AppLocalizations.of(context)!.enterEmail,
                               prefixIcon: const Icon(Icons.email),
                             ),
-                            style: GoogleFonts.prompt(
-                                textStyle: const TextStyle(fontSize: 18))),
+                            style: Theme.of(context).textTheme.subtitle2),
                         const SizedBox(
                           height: 20,
                         ),
                         TextFormField(
-                          controller: _passwordFieldController,
-                          autofillHints: const [AutofillHints.newPassword],
-                          obscureText: !_isPasswordVisible,
-                          validator: (value) {
-                            if (value == null || value.length < 6) {
-                              return AppLocalizations.of(context)!
-                                  .passwordMinLength6;
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: MyApp.of(context)!.getDarkMode()
-                                ? Theme.of(context).primaryColor
-                                : Colors.white,
-                            border: const OutlineInputBorder(),
-                            hintText:
-                                AppLocalizations.of(context)!.createPassword,
-                            prefixIcon: const Icon(Icons.password),
-                            suffixIcon: InkWell(
-                              child: _isPasswordVisible
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
-                              onTap: () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
-                                });
-                              },
+                            controller: _passwordFieldController,
+                            autofillHints: const [AutofillHints.newPassword],
+                            obscureText: !_isPasswordVisible,
+                            validator: (value) {
+                              if (value == null || value.length < 6) {
+                                return AppLocalizations.of(context)!
+                                    .passwordMinLength6;
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: MyApp.of(context)!.getDarkMode()
+                                  ? Theme.of(context).primaryColor
+                                  : Colors.white,
+                              border: const OutlineInputBorder(),
+                              hintText:
+                                  AppLocalizations.of(context)!.createPassword,
+                              prefixIcon: const Icon(Icons.password),
+                              suffixIcon: InkWell(
+                                child: _isPasswordVisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                                onTap: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                              ),
                             ),
-                          ),
-                          style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
+                            style: Theme.of(context).textTheme.subtitle2),
+                        const SizedBox(height: 20),
                         FractionallySizedBox(
                           widthFactor: 1,
                           child: SizedBox(
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   BackendHelper.createUserWithEmailAndPassword(
                                           _nameFieldController.text,
@@ -173,11 +159,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                               },
                               child: Text(
-                                AppLocalizations.of(context)!.createAccount,
-                                style: GoogleFonts.prompt(
-                                  textStyle: const TextStyle(fontSize: 18),
-                                ),
-                              ),
+                                  AppLocalizations.of(context)!.createAccount,
+                                  style: Theme.of(context).textTheme.subtitle2),
                             ),
                           ),
                         ),
@@ -185,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 40)
               ], mainAxisAlignment: MainAxisAlignment.center),
             ),
           ),

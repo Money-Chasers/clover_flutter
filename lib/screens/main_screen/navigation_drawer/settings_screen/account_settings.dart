@@ -2,7 +2,6 @@ import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'change_password_screen.dart';
 import 'update_email_screen.dart';
@@ -37,11 +36,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(AppLocalizations.of(context)!.updateEmail,
-                            style: GoogleFonts.oswald(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                            style: Theme.of(context).textTheme.subtitle1),
                         Text(_authInstance.currentUser!.email.toString(),
-                            style: GoogleFonts.prompt(
-                                fontSize: 16, color: const Color(0xff939393)))
+                            style: Theme.of(context).textTheme.bodyText1)
                       ],
                     )
                   ],
@@ -58,7 +55,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     const Icon(Icons.password),
                     const SizedBox(width: 10),
                     Text(AppLocalizations.of(context)!.changePassword,
-                        style: GoogleFonts.prompt(fontSize: 16))
+                        style: Theme.of(context).textTheme.subtitle1)
                   ],
                 ),
                 const Icon(Icons.arrow_forward), () {

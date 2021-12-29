@@ -4,7 +4,6 @@ import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'account_settings.dart';
 import 'choose_language_screen.dart';
@@ -37,19 +36,10 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   Column(
                     children: [
-                      Text(
-                        _authInstance.currentUser!.displayName.toString(),
-                        style: GoogleFonts.prompt(
-                          textStyle: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Text(
-                        _authInstance.currentUser!.email.toString(),
-                        style: GoogleFonts.prompt(
-                          textStyle: const TextStyle(fontSize: 14),
-                        ),
-                      )
+                      Text(_authInstance.currentUser!.displayName.toString(),
+                          style: Theme.of(context).textTheme.subtitle2),
+                      Text(_authInstance.currentUser!.email.toString(),
+                          style: Theme.of(context).textTheme.subtitle2)
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
@@ -58,14 +48,11 @@ class SettingsScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const AccountSettingsScreen()));
+                              builder: (context) =>
+                                  const AccountSettingsScreen()));
                     },
-                    child: Text(
-                      AppLocalizations.of(context)!.accountSettings,
-                      style: GoogleFonts.prompt(
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                    ),
+                    child: Text(AppLocalizations.of(context)!.accountSettings,
+                        style: Theme.of(context).textTheme.button),
                   )
                 ],
               ),
@@ -78,15 +65,13 @@ class SettingsScreen extends StatelessWidget {
                     const Icon(Icons.language, size: 30),
                     const SizedBox(width: 10),
                     Text(AppLocalizations.of(context)!.language,
-                        style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(fontSize: 16)))
+                        style: Theme.of(context).textTheme.subtitle2)
                   ],
                 ),
                 Row(
                   children: [
                     Text(AppLocalizations.of(context)!.languageName,
-                        style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(fontSize: 16))),
+                        style: Theme.of(context).textTheme.subtitle2),
                     const SizedBox(width: 10),
                     const Icon(Icons.arrow_forward_ios, size: 15)
                   ],
@@ -102,8 +87,7 @@ class SettingsScreen extends StatelessWidget {
                     const Icon(Icons.dark_mode, size: 30),
                     const SizedBox(width: 10),
                     Text(AppLocalizations.of(context)!.darkMode,
-                        style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(fontSize: 16)))
+                        style: Theme.of(context).textTheme.subtitle2)
                   ],
                 ),
                 Switch(

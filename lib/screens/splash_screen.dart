@@ -5,7 +5,6 @@ import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'authentication/education_screen.dart';
 import 'main_screen/main_screen.dart';
@@ -24,9 +23,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
       _future1.then((_) async {
         if (BackendHelper.getCurrentUser != null) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const IntroScreen()));
-        } else {
           BackendHelper.checkIfEducationIsSet().then((value) {
             if (value.docs.isEmpty) {
               Navigator.pushReplacement(context,
@@ -41,6 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
             buildSnackBarMessage(
                 context, AppLocalizations.of(context)!.anErrorOccurred);
           });
+        } else {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const IntroScreen()));
         }
       });
     });
@@ -59,24 +58,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image(
-                  image: Image.asset(
-                'assets/images/logo.png',
-                scale: 1.25,
-              ).image),
-              Text("Clover",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.oswald(
-                      textStyle: Theme.of(context).textTheme.headline3)),
-            ],
-          ),
-        ),
+      body: Center(
+        child: Image(
+            image: Image.asset(
+          'assets/images/logo.png',
+          scale: 1.25,
+        ).image),
       ),
     );
   }

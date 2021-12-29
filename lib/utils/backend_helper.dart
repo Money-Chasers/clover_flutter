@@ -28,15 +28,8 @@ class BackendHelper {
   }
 
   static Future signInWithEmailAndPassword(email, password) {
-    return _authInstance
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((value) {
-      _firestoreInstance
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .where('education', isEqualTo: 0)
-          .get();
-    });
+    return _authInstance.signInWithEmailAndPassword(
+        email: email, password: password);
   }
 
   static Future signOut() {

@@ -186,19 +186,15 @@ class _MainScreenState extends State<MainScreen> {
                                             const TextStyle(fontSize: 16),
                                       ),
                                     ),
-                                    onPressed: () async {
-                                      final checkValue =
-                                          await BackendHelper.signOut();
-                                      if (checkValue != null) {
-                                        if (checkValue) {
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const IntroScreen()),
-                                              (route) => false);
-                                        }
-                                      }
+                                    onPressed: () {
+                                      BackendHelper.signOut().then((_) {
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const IntroScreen()),
+                                            (route) => false);
+                                      });
                                     }),
                               ],
                             );

@@ -62,8 +62,8 @@ class _PaperSummaryScreenState extends State<PaperSummaryScreen> {
                       child: Column(
                           children:
                               _buildQuestionCards(widget.allQuestionModels)))),
-              buildButton(
-                  AppLocalizations.of(context)!.proceed, _submitQuestionPaper)
+              buildButton(context, AppLocalizations.of(context)!.proceed,
+                  _submitQuestionPaper)
             ],
           ),
         ),

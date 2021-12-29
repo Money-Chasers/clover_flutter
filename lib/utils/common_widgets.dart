@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-buildButton(text, callbackFunction) {
+buildButton(context, text, callbackFunction) {
   return FractionallySizedBox(
     widthFactor: 1,
     child: SizedBox(
       height: 50,
       child: ElevatedButton(
-        onPressed: callbackFunction,
-        child: Text(text,
-            style:
-                GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 18))),
-      ),
+          onPressed: callbackFunction,
+          child: Text(text, style: Theme.of(context).textTheme.button)),
     ),
   );
 }
@@ -36,12 +32,7 @@ buildSvg(svgPath) {
 buildSettingsSectionHeader(context, text) {
   return Padding(
     padding: const EdgeInsets.all(10),
-    child: Text(
-      text,
-      style: GoogleFonts.prompt(
-        textStyle: const TextStyle(fontSize: 16, color: Colors.grey),
-      ),
-    ),
+    child: Text(text, style: Theme.of(context).textTheme.subtitle1),
   );
 }
 

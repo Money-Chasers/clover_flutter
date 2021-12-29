@@ -88,7 +88,7 @@ class _PaperDetailsScreenState extends State<PaperDetailsScreen> {
                             textStyle: const TextStyle(fontSize: 18)),
                       ),
                       const SizedBox(height: 20),
-                      buildButton(AppLocalizations.of(context)!.proceed, () {
+                      buildButton(context, AppLocalizations.of(context)!.proceed, () {
                         if (_formKey.currentState!.validate()) {
                           _handleFormSubmit(_titleFieldController.text,
                               _nQuestionFieldController.text);

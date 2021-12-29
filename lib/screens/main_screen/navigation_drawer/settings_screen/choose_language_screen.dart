@@ -86,7 +86,7 @@ class _ChooseLanguageScreenState extends State<ChooseLanguageScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              buildButton(AppLocalizations.of(context)!.confirm, () {
+              buildButton(context, AppLocalizations.of(context)!.confirm, () {
                 SharedPreferencesHelper.setLocale(_selectedLocale);
                 MyApp.of(context)!.setLocale(Locale(_selectedLocale));
                 Navigator.pop(context);

@@ -3,7 +3,6 @@ import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../main.dart';
 
@@ -54,8 +53,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                               border: const OutlineInputBorder(),
                               hintText:
                                   AppLocalizations.of(context)!.enterNewEmail),
-                          style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(fontSize: 18)),
+                          style: Theme.of(context).textTheme.subtitle1,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return AppLocalizations.of(context)!
@@ -89,8 +87,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                               hintText:
                                   AppLocalizations.of(context)!.enterPassword),
                           controller: _passwordFieldController,
-                          style: GoogleFonts.prompt(
-                              textStyle: const TextStyle(fontSize: 18)),
+                          style: Theme.of(context).textTheme.subtitle1,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return AppLocalizations.of(context)!
@@ -100,7 +97,8 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                           },
                         ),
                         const SizedBox(height: 20),
-                        buildButton(AppLocalizations.of(context)!.updateEmail,
+                        buildButton(
+                            context, AppLocalizations.of(context)!.updateEmail,
                             () {
                           if (_formKey.currentState!.validate()) {
                             BackendHelper.updateUserEmail(
