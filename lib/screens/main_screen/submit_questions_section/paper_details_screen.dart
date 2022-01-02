@@ -3,7 +3,6 @@ import 'package:clover_flutter/screens/main_screen/submit_questions_section/ques
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class PaperDetailsScreen extends StatefulWidget {
   const PaperDetailsScreen({Key? key}) : super(key: key);
@@ -21,8 +20,8 @@ class _PaperDetailsScreenState extends State<PaperDetailsScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                QuestionDetailsScreen(paperTitle: title, nQuestions: int.parse(nQuestions))));
+            builder: (context) => QuestionDetailsScreen(
+                paperTitle: title, nQuestions: int.parse(nQuestions))));
   }
 
   @override
@@ -62,8 +61,7 @@ class _PaperDetailsScreenState extends State<PaperDetailsScreen> {
                             border: const OutlineInputBorder(),
                             hintText: AppLocalizations.of(context)!.enterTitle,
                             prefixIcon: const Icon(Icons.title)),
-                        style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(fontSize: 18)),
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
@@ -84,16 +82,14 @@ class _PaperDetailsScreenState extends State<PaperDetailsScreen> {
                             hintText: AppLocalizations.of(context)!
                                 .enterNumberOfQuestion,
                             prefixIcon: const Icon(Icons.format_list_numbered)),
-                        style: GoogleFonts.prompt(
-                            textStyle: const TextStyle(fontSize: 18)),
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                       const SizedBox(height: 20),
-                      buildButton(context, AppLocalizations.of(context)!.proceed, () {
+                      buildButton(
+                          context, AppLocalizations.of(context)!.proceed, () {
                         if (_formKey.currentState!.validate()) {
                           _handleFormSubmit(_titleFieldController.text,
                               _nQuestionFieldController.text);
-                        } else {
-                          return null;
                         }
                       })
                     ],

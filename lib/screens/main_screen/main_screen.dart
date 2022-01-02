@@ -3,7 +3,6 @@ import 'package:clover_flutter/screens/main_screen/submit_questions_section/pape
 import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'navigation_drawer/dashboard_section/dashboard_section.dart';
 import 'navigation_drawer/settings_screen/settings_screen.dart';
@@ -38,12 +37,7 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Icon(icon, size: 40),
             const SizedBox(width: 10),
-            Text(
-              text,
-              style:
-                  GoogleFonts.prompt(textStyle: const TextStyle(fontSize: 15)),
-              textAlign: TextAlign.center,
-            ),
+            Text(text, style: Theme.of(context).textTheme.subtitle1)
           ],
         ),
       ),
@@ -74,19 +68,16 @@ class _MainScreenState extends State<MainScreen> {
 
   _buildDrawerButton(icon, callbackFunction) {
     return GestureDetector(
-      child: Container(
-        padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorLight,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: Icon(icon, size: 30),
-      ),
-      onTap: () {
-        Navigator.pop(context);
-        callbackFunction();
-      },
-    );
+        child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColorLight,
+                borderRadius: BorderRadius.circular(5)),
+            child: Icon(icon, size: 30)),
+        onTap: () {
+          Navigator.pop(context);
+          callbackFunction();
+        });
   }
 
   @override
@@ -161,31 +152,24 @@ class _MainScreenState extends State<MainScreen> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               content: Text(
-                                AppLocalizations.of(context)!.logoutConfirm,
-                                style: GoogleFonts.prompt(
-                                  textStyle: const TextStyle(fontSize: 16),
-                                ),
-                              ),
+                                  AppLocalizations.of(context)!.logoutConfirm,
+                                  style: Theme.of(context).textTheme.subtitle1),
                               actions: [
                                 TextButton(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.no,
-                                    style: GoogleFonts.prompt(
-                                      textStyle: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
+                                  child: Text(AppLocalizations.of(context)!.no,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle1),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
                                 ),
                                 TextButton(
                                     child: Text(
-                                      AppLocalizations.of(context)!.yes,
-                                      style: GoogleFonts.prompt(
-                                        textStyle:
-                                            const TextStyle(fontSize: 16),
-                                      ),
-                                    ),
+                                        AppLocalizations.of(context)!.yes,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1),
                                     onPressed: () {
                                       BackendHelper.signOut().then((_) {
                                         Navigator.pushAndRemoveUntil(
