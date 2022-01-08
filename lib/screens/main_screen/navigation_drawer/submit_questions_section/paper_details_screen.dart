@@ -1,5 +1,5 @@
 import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/main_screen/submit_questions_section/question_details_screen.dart';
+import 'package:clover_flutter/screens/main_screen/navigation_drawer/submit_questions_section/question_details_screen.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

@@ -48,5 +48,6 @@
   "enterQuestionText": "Enter question",
   "enterOptionText": "Enter option",
   "questionPaperSummary": "Question paper summary",
-  "anErrorOccurred": "An error occurred, please try again later."
+  "anErrorOccurred": "An error occurred, please try again later.",
+  "practice": "Practice"
 }

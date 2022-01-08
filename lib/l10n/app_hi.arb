@@ -48,5 +48,6 @@
   "enterQuestionText": "प्रश्न भरें",
   "enterOptionText": "विकल्प भरें",
   "questionPaperSummary": "प्रश्न पत्र सारांश",
-  "anErrorOccurred": "एक त्रुटि घटित हुई है, कृपया बाद में पुन: प्रयास करें।"
+  "anErrorOccurred": "एक त्रुटि घटित हुई है, कृपया बाद में पुन: प्रयास करें।",
+  "practice": "अभ्यास"
 }

@@ -1,11 +1,12 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_screen/submit_questions_section/paper_details_screen.dart';
+import 'package:clover_flutter/screens/main_screen/navigation_drawer/practice_section/practice_screen.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'navigation_drawer/dashboard_section/dashboard_section.dart';
 import 'navigation_drawer/settings_screen/settings_screen.dart';
+import 'navigation_drawer/submit_questions_section/paper_details_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -54,6 +55,8 @@ class _MainScreenState extends State<MainScreen> {
         return AppLocalizations.of(context)!.dashboard;
       case (1):
         return AppLocalizations.of(context)!.paperDetails;
+      case (2):
+        return AppLocalizations.of(context)!.practice;
     }
   }
 
@@ -63,6 +66,8 @@ class _MainScreenState extends State<MainScreen> {
         return const DashboardSection();
       case (1):
         return const PaperDetailsScreen();
+      case (2):
+        return const PracticeScreen();
     }
   }
 
@@ -125,6 +130,8 @@ class _MainScreenState extends State<MainScreen> {
                           AppLocalizations.of(context)!.submitQuestions,
                           Icons.question_answer,
                           1),
+                      _buildNavigationDrawerTile(
+                          AppLocalizations.of(context)!.practice, Icons.quiz, 2)
                     ],
                   ),
                 ),
