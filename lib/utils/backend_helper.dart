@@ -91,7 +91,7 @@ class BackendHelper {
     return Future.wait([future1, future2]);
   }
 
-  static Future fetchQuestionPapers() {
+  static fetchQuestionPapers() {
     return _firestoreInstance.collection('questionPapers').get();
   }
 }
