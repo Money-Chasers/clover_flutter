@@ -94,4 +94,11 @@ class BackendHelper {
   static fetchQuestionPapers() {
     return _firestoreInstance.collection('questionPapers').get();
   }
+
+  static fetchQuestions(List<String> questionIds) {
+    return _firestoreInstance
+        .collection('questions')
+        .where(FieldPath.documentId, whereIn: questionIds)
+        .get();
+  }
 }
