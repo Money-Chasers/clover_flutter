@@ -1,3 +1,4 @@
+import 'package:clover_flutter/components/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -29,6 +30,11 @@ class _DashboardSectionState extends State<DashboardSection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.dashboard),
+      ),
+      drawer: const MyDrawer(),
+      body: _getBottomNavigationView(_bottomNavigationCurrentIndex),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _bottomNavigationCurrentIndex,
         items: [
@@ -50,9 +56,6 @@ class _DashboardSectionState extends State<DashboardSection> {
             _bottomNavigationCurrentIndex = index;
           });
         },
-      ),
-      body: SafeArea(
-        child: _getBottomNavigationView(_bottomNavigationCurrentIndex),
       ),
     );
   }

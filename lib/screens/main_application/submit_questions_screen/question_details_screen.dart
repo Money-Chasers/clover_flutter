@@ -1,5 +1,5 @@
 import 'package:clover_flutter/data_models/question_model.dart';
-import 'package:clover_flutter/screens/main_screen/navigation_drawer/submit_questions_section/paper_summary_screen.dart';
+import 'package:clover_flutter/screens/main_application/navigation_drawer/submit_questions_screen/paper_summary_screen.dart';
 import 'package:clover_flutter/utils/constant_values.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -123,7 +123,7 @@ class _EducationScreenState extends State<EducationScreen> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            const MainScreen()),
+                                                            const DashboardSection()),
                                                     (e) => false))
                                   });
                         }

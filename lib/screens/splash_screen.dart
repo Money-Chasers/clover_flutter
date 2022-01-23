@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'authentication/education_screen.dart';
-import 'main_screen/main_screen.dart';
+import 'main_application/dashboard_screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
           BackendHelper.checkIfEducationIsSet().then((value) {
             if (value.docs.isEmpty) {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const MainScreen()));
+                  MaterialPageRoute(builder: (context) => const DashboardSection()));
             } else {
               Navigator.pushReplacement(
                   context,

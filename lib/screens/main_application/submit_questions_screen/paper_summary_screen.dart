@@ -1,5 +1,5 @@
 import 'package:clover_flutter/data_models/question_model.dart';
-import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/screens/main_application/navigation_drawer/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _PaperSummaryScreenState extends State<PaperSummaryScreen> {
       if (checkValue) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
+            MaterialPageRoute(builder: (context) => const DashboardSection()),
             (route) => false);
       }
     }
