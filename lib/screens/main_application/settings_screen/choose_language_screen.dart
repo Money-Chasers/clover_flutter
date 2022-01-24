@@ -1,4 +1,4 @@
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:flutter/material.dart';

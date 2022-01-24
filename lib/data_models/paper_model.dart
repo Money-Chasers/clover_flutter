@@ -1,23 +1,25 @@
 class PaperModel {
   String paperTitle;
-  List<String> questionIds;
+  List<QuestionModel> questionModels;
   List<String> paperTags;
+  List<int> duration;
+  bool isPublic;
 
-  PaperModel(this.paperTitle, this.questionIds, this.paperTags);
+  PaperModel(this.paperTitle, this.questionModels, this.paperTags,
+      this.duration, this.isPublic);
+}
 
-  void addTags(String tag) {
-    paperTags.add(tag);
-  }
+class QuestionModel {
+  String questionText;
+  List<OptionModel> options;
+  List<String> questionTags;
 
-  void addQues(String id) {
-    questionIds.add(id);
-  }
+  QuestionModel(this.questionText, this.options, this.questionTags);
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['paperTitle'] = paperTitle;
-    data['questionIds'] = questionIds;
-    data['paperTags'] = paperTags;
-    return data;
-  }
+class OptionModel {
+  String text;
+  bool isCorrect;
+
+  OptionModel(this.text, this.isCorrect);
 }

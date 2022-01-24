@@ -1,5 +1,5 @@
 import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

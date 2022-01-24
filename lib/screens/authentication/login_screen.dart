@@ -2,7 +2,7 @@ import 'package:clover_flutter/main.dart';
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

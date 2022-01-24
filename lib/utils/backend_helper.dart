@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/data_models/paper_model.dart';
-import 'package:clover_flutter/data_models/question_model.dart';
 import 'package:clover_flutter/data_models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -68,28 +66,28 @@ class BackendHelper {
     });
   }
 
-  static Future addQuestionPaper(
-      String paperTitle, List<QuestionModel> questionModels) {
-    final _batchQuestions = _firestoreInstance.batch();
-    final List<String> _questionIds = [];
-    final _tagsUnion = <String>{};
-    for (var element in questionModels) {
-      var docRef = _firestoreInstance.collection("questions").doc();
-      _questionIds.add(docRef.id);
-      _tagsUnion.union(element.questionTags.toSet());
-      _batchQuestions.set(
-          docRef,
-          QuestionModel(
-                  element.questionText, element.options, element.questionTags)
-              .toJson());
-    }
-    Future future1 = _batchQuestions.commit();
-    Future future2 = _firestoreInstance.collection('questionPapers').add(
-        PaperModel(paperTitle, _questionIds, _tagsUnion.toList(growable: false))
-            .toJson());
-
-    return Future.wait([future1, future2]);
-  }
+  // static Future addQuestionPaper(
+  //     String paperTitle, List<QuestionModel> questionModels) {
+  //   final _batchQuestions = _firestoreInstance.batch();
+  //   final List<String> _questionIds = [];
+  //   final _tagsUnion = <String>{};
+  //   for (var element in questionModels) {
+  //     var docRef = _firestoreInstance.collection("questions").doc();
+  //     _questionIds.add(docRef.id);
+  //     _tagsUnion.union(element.questionTags.toSet());
+  //     _batchQuestions.set(
+  //         docRef,
+  //         QuestionModel(
+  //                 element.questionText, element.options, element.questionTags)
+  //             .toJson());
+  //   }
+  //   Future future1 = _batchQuestions.commit();
+  //   Future future2 = _firestoreInstance.collection('questionPapers').add(
+  //       PaperModel(paperTitle, _questionIds, _tagsUnion.toList(growable: false))
+  //           .toJson());
+  //
+  //   return Future.wait([future1, future2]);
+  // }
 
   static fetchQuestionPapers() {
     return _firestoreInstance.collection('questionPapers').get();

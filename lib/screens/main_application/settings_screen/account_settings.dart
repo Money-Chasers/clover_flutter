@@ -1,4 +1,4 @@
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

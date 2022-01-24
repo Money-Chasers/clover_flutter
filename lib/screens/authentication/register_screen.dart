@@ -1,6 +1,6 @@
 import 'package:clover_flutter/screens/authentication/education_screen.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

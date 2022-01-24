@@ -1,7 +1,7 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/settings_screen/settings_screen.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/submit_questions_section.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,7 +24,7 @@ class _MyDrawerState extends State<MyDrawer> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => const SubmitQuestionsSection()));
+                builder: (context) => const PaperDetailsSection()));
         break;
       default:
         Navigator.pushReplacement(context,
