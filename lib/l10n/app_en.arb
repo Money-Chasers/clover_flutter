@@ -22,6 +22,7 @@
   "yes": "Yes",
   "no": "No",
   "dashboard": "Dashboard",
+  "practice": "Practice",
   "language": "Language",
   "profile": "PROFILE",
   "preferences": "PREFERENCES",
@@ -48,6 +49,5 @@
   "enterQuestionText": "Enter question",
   "enterOptionText": "Enter option",
   "questionPaperSummary": "Question paper summary",
-  "anErrorOccurred": "An error occurred, please try again later.",
-  "practice": "Practice"
+  "anErrorOccurred": "An error occurred, please try again later."
 }

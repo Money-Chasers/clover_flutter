@@ -1,3 +1,4 @@
+import 'package:clover_flutter/screens/main_screen/navigation_drawer/settings_screen/image_picker.dart';
 import 'package:clover_flutter/utils/common_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
