@@ -12,6 +12,10 @@ class QuestionPaperState {
     // add new packet to stream
     _questionPaper.add(newPaperModel);
   }
+
+  void reset() {
+    _questionPaper.add(PaperModel('', [], [], [0, 0], true));
+  }
 }
 
 QuestionPaperState questionPaperService = QuestionPaperState();

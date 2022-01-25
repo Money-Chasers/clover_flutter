@@ -1,8 +1,12 @@
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
+import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/add_question_section.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/edit_question_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 
 class CreatePaperSection extends StatefulWidget {
@@ -13,7 +17,17 @@ class CreatePaperSection extends StatefulWidget {
 }
 
 class _CreatePaperSectionState extends State<CreatePaperSection> {
-  void _handleSaveClick() {}
+  void _handleSaveClick() {
+    BackendHelper.addQuestionPaper(questionPaperService.current).then((value) {
+      buildSnackBarMessage(context, 'Task completed successfully!');
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const DashboardSection()),
+          (route) => false);
+      questionPaperService.reset();
+    }).onError(
+        (error, stackTrace) => buildSnackBarMessage(context, 'Task failed!'));
+  }
 
   void _handleEditPaperClick() {
     Navigator.pushReplacement(context,
@@ -37,22 +51,82 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
         MaterialPageRoute(builder: (context) => const AddQuestionSection()));
   }
 
-  Widget _buildQuestion(QuestionModel questionModel) {
+  void _handleQuestionDeleteClick(int index) {
+    // get updated questionModels list.
+    List<QuestionModel> _tempQuestionModels = [];
+    questionPaperService.current.questionModels.asMap().forEach((key, value) {
+      if (key != index) {
+        _tempQuestionModels.add(value);
+      }
+    });
+
+    // now create a new paperModel with this list and add it to the stream.
+    PaperModel _tempPaperModel = questionPaperService.current;
+    _tempPaperModel.questionModels = _tempQuestionModels;
+    questionPaperService.update(_tempPaperModel);
+  }
+
+  void _handleQuestionEditClick(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditQuestionSection(editIndex: index),
+      ),
+    );
+  }
+
+  Widget _buildQuestion(int index, QuestionModel questionModel) {
     return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColorLight,
         border: Border.all(width: 1),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             questionModel.questionText,
             maxLines: 3,
+            overflow: TextOverflow.ellipsis,
           ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                child: const Icon(
+                  Icons.edit,
+                ),
+                onTap: () {
+                  _handleQuestionEditClick(index);
+                },
+              ),
+              const SizedBox(width: 10),
+              InkWell(
+                child: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onTap: () {
+                  _handleQuestionDeleteClick(index);
+                },
+              )
+            ],
+          )
         ],
       ),
     );
+  }
+
+  List<Widget> _buildQuestions(PaperModel paperModel) {
+    List<Widget> _tempQuestionsList = [];
+    paperModel.questionModels.asMap().forEach((key, value) {
+      _tempQuestionsList.add(_buildQuestion(key, value));
+    });
+    return _tempQuestionsList;
   }
 
   Widget _buildMainWidget(PaperModel paperModel) {
@@ -103,9 +177,7 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
-              children: paperModel.questionModels
-                  .map((e) => _buildQuestion(e))
-                  .toList(growable: false),
+              children: _buildQuestions(paperModel),
             ),
           ),
         )

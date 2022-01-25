@@ -23,6 +23,22 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
   final _attemptDurationList = [0, 0];
   bool _isQuestionPublic = true;
 
+  @override
+  void initState() {
+    super.initState();
+
+    // set from previous values if available.
+    PaperModel _currentPaperModel = questionPaperService.current;
+    _paperTitleController.text = _currentPaperModel.paperTitle;
+
+    int hours = _currentPaperModel.duration[0];
+    int minutes = _currentPaperModel.duration[1];
+    _attemptDurationController.text  = _convertDurationListToString(hours, minutes);
+    _attemptDurationList[0] = hours;
+    _attemptDurationList[1] = minutes;
+    _isQuestionPublic = _currentPaperModel.isPublic;
+  }
+
   void _handleButtonClick() {
     if (_formKey.currentState!.validate()) {
       PaperModel paperModel = questionPaperService.current;
@@ -32,24 +48,39 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
       questionPaperService.update(paperModel);
 
       // Now navigate to the next page
-      Navigator.push(context,
+      Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const CreatePaperSection()));
     }
   }
 
-  void _handlePickerConfirm(Picker picker, List<int> value) {
+  String? _validateTextField(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppLocalizations.of(context)!.fieldRequired;
+    }
+    return null;
+  }
+
+  String _convertDurationListToString(int hours, int minutes) {
     String _hoursString = '';
-    if (value[0] > 0) {
-      _hoursString = value[0].toString() + " hours ";
+    if (hours> 0) {
+      _hoursString = hours.toString() + " hours ";
     }
     String _minutesString = '';
-    if (value[1] > 0) {
-      _minutesString = value[1].toString() + " minutes";
+    if (minutes> 0) {
+      _minutesString = minutes.toString() + " minutes";
     }
+
+    return _hoursString + _minutesString;
+  }
+
+  void _handlePickerConfirm(Picker picker, List<int> value) {
+    int hours = value[0];
+    int minutes = value[1];
+
     setState(() {
-      _attemptDurationList[0] = value[0];
-      _attemptDurationList[1] = value[1];
-      _attemptDurationController.text = _hoursString + _minutesString;
+      _attemptDurationList[0] = hours;
+      _attemptDurationList[1] = minutes;
+      _attemptDurationController.text = _convertDurationListToString(hours, minutes);
     });
   }
 
@@ -102,12 +133,7 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
                   children: [
                     TextFormField(
                       controller: _paperTitleController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppLocalizations.of(context)!.fieldRequired;
-                        }
-                        return null;
-                      },
+                      validator: _validateTextField,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           filled: true,
@@ -118,12 +144,7 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
                     TextFormField(
                       readOnly: true,
                       controller: _attemptDurationController,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppLocalizations.of(context)!.fieldRequired;
-                        }
-                        return null;
-                      },
+                      validator: _validateTextField,
                       onTap: _handlePickerClick,
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
