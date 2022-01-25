@@ -1,3 +1,4 @@
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
@@ -14,7 +15,13 @@ class AddQuestionSection extends StatefulWidget {
 class _AddQuestionSectionState extends State<AddQuestionSection> {
   final _formKey = GlobalKey<FormState>();
 
-  final QuestionModel _currentQuestionModel = QuestionModel('', [], []);
+  QuestionModel _currentQuestionModel = QuestionModel('', [], []);
+
+  void _handleChangeQuestionTextField(String value) {
+    setState(() {
+      _currentQuestionModel.questionText = value;
+    });
+  }
 
   String? _validateTextField(String? value) {
     if (value == null || value.isEmpty) {
@@ -25,7 +32,7 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
 
   void _addNewOption() {
     setState(() {
-      _currentQuestionModel.options.add(OptionModel('text', true));
+      _currentQuestionModel.options.add(OptionModel('', false));
     });
   }
 
@@ -43,24 +50,83 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
     });
   }
 
+  void _handleOptionBoolClick(int index) {
+    setState(() {
+      _currentQuestionModel.options[index].isCorrect =
+          !_currentQuestionModel.options[index].isCorrect;
+    });
+  }
+
+  void _confirmAddQuestion() {
+    if (_formKey.currentState!.validate()) {
+      PaperModel _currentPaperModel = questionPaperService.current;
+      questionPaperService.current.questionModels.add(_currentQuestionModel);
+
+      questionPaperService.update(_currentPaperModel);
+      Navigator.pop(context);
+    }
+  }
+
+  void _handleOptionTextChange(String value, int index) {
+    setState(() {
+      _currentQuestionModel.options[index].text = value;
+    });
+  }
+
+  void _handleResetForm() {
+    _formKey.currentState!.reset();
+    setState(() {
+      _currentQuestionModel = QuestionModel('', [], []);
+    });
+  }
+
   Widget _buildOption(int index, OptionModel optionModel) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // TextFormField(
-            //   validator: _validateTextField,
-            //   decoration: const InputDecoration(hintText: 'Enter option'),
-            // )
+            Expanded(
+              child: Row(
+                children: [
+                  GestureDetector(
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1),
+                          color: optionModel.isCorrect
+                              ? Colors.green
+                              : Colors.red),
+                    ),
+                    onTap: () {
+                      _handleOptionBoolClick(index);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      initialValue: optionModel.text,
+                      onChanged: (String value) {
+                        _handleOptionTextChange(value, index);
+                      },
+                      validator: _validateTextField,
+                      decoration:
+                          const InputDecoration(hintText: 'Enter option'),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            InkWell(
+              child: const Icon(Icons.delete, color: Colors.red),
+              onTap: () {
+                _removeOption(index);
+              },
+            ),
           ],
         ),
-        InkWell(
-          child: const Icon(Icons.delete, color: Colors.red),
-          onTap: () {
-            _removeOption(index);
-          },
-        )
+        const SizedBox(height: 20)
       ],
     );
   }
@@ -73,6 +139,22 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
     return _optionsList;
   }
 
+  ElevatedButton _buildAddOptionButton(bool enabled) {
+    return ElevatedButton(
+      onPressed: enabled ? _addNewOption : () {},
+      child: const Icon(Icons.add, size: 30),
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        padding: const EdgeInsets.all(5),
+        splashFactory:
+            enabled ? InkRipple.splashFactory : NoSplash.splashFactory,
+        shadowColor:
+            enabled ? Theme.of(context).shadowColor : Colors.transparent,
+        primary: enabled ? Theme.of(context).primaryColor : Colors.grey,
+      ),
+    );
+  }
+
   Widget _buildMainWidget(PaperModel paperModel) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -81,7 +163,9 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
         child: Column(
           children: [
             TextFormField(
-              initialValue: _currentQuestionModel.questionText,
+              onChanged: (String value) {
+                _handleChangeQuestionTextField(value);
+              },
               validator: _validateTextField,
               minLines: 6,
               maxLines: 6,
@@ -95,21 +179,18 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Options', style: Theme.of(context).textTheme.headline4),
-                ElevatedButton(
-                  onPressed: _addNewOption,
-                  child: const Icon(Icons.add, size: 30),
-                  style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(5)),
-                ),
+                _buildAddOptionButton(_currentQuestionModel.options.length < 6)
               ],
             ),
-            const SizedBox(height: 10),
-            SingleChildScrollView(
-              child: Column(
-                children: _buildOptions(),
+            const SizedBox(height: 20),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: _buildOptions(),
+                ),
               ),
-            )
+            ),
+            buildButton(context, 'Add question', _confirmAddQuestion)
           ],
         ),
       ),
@@ -121,12 +202,42 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add question'),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: InkWell(
+                child: const Icon(Icons.restart_alt),
+                onTap: _handleResetForm,
+              ),
+            ),
+          )
+        ],
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
         stream: questionPaperService.stream$,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          return _buildMainWidget(snap.data);
+          switch (snap.connectionState) {
+            case (ConnectionState.none):
+            case ConnectionState.waiting:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+            case ConnectionState.active:
+            case ConnectionState.done:
+              if (snap.hasError) {
+                return const Center(
+                  child: Text('An error occurred!'),
+                );
+              } else {
+                return _buildMainWidget(snap.data);
+              }
+            default:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+          }
         },
       ),
     );

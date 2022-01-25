@@ -38,7 +38,21 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
   }
 
   Widget _buildQuestion(QuestionModel questionModel) {
-    return Container();
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColorLight,
+        border: Border.all(width: 1),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Text(
+            questionModel.questionText,
+            maxLines: 3,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildMainWidget(PaperModel paperModel) {
@@ -86,10 +100,13 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
           ],
         ),
         SingleChildScrollView(
-          child: Column(
-            children: paperModel.questionModels
-                .map((e) => _buildQuestion(e))
-                .toList(growable: false),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: paperModel.questionModels
+                  .map((e) => _buildQuestion(e))
+                  .toList(growable: false),
+            ),
           ),
         )
       ],
@@ -113,7 +130,26 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
       body: StreamBuilder(
         stream: questionPaperService.stream$,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          return _buildMainWidget(snap.data);
+          switch (snap.connectionState) {
+            case (ConnectionState.none):
+            case ConnectionState.waiting:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+            case ConnectionState.active:
+            case ConnectionState.done:
+              if (snap.hasError) {
+                return const Center(
+                  child: Text('An error occurred!'),
+                );
+              } else {
+                return _buildMainWidget(snap.data);
+              }
+            default:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(

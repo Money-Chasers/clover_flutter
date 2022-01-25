@@ -32,7 +32,8 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
       questionPaperService.update(paperModel);
 
       // Now navigate to the next page
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const CreatePaperSection()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const CreatePaperSection()));
     }
   }
 
@@ -162,7 +163,26 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
       body: StreamBuilder(
         stream: questionPaperService.stream$,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          return _buildMainWidget(snap.data);
+          switch (snap.connectionState) {
+            case (ConnectionState.none):
+            case ConnectionState.waiting:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+            case ConnectionState.active:
+            case ConnectionState.done:
+              if (snap.hasError) {
+                return const Center(
+                  child: Text('An error occurred!'),
+                );
+              } else {
+                return _buildMainWidget(snap.data);
+              }
+            default:
+              return const Center(
+                child: Text('An error occurred!'),
+              );
+          }
         },
       ),
     );
