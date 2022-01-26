@@ -1,7 +1,7 @@
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:rxdart/rxdart.dart';
 
-class QuestionPaperState {
+class QuestionPaperAttemptState {
   final BehaviorSubject<PaperModel> _questionPaper =
       BehaviorSubject.seeded(PaperModel('', [], [0, 0], true));
 
@@ -12,10 +12,6 @@ class QuestionPaperState {
     // add new packet to stream
     _questionPaper.add(newPaperModel);
   }
-
-  void reset() {
-    _questionPaper.add(PaperModel('', [], [0, 0], true));
-  }
 }
 
-QuestionPaperState questionPaperService = QuestionPaperState();
+QuestionPaperAttemptState questionPaperAttemptService = QuestionPaperAttemptState();

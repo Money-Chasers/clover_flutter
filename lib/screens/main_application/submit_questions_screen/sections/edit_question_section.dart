@@ -17,7 +17,7 @@ class EditQuestionSection extends StatefulWidget {
 class _EditQuestionSectionState extends State<EditQuestionSection> {
   final _formKey = GlobalKey<FormState>();
 
-  QuestionModel _currentQuestionModel = QuestionModel('', [], []);
+  QuestionModel _currentQuestionModel = QuestionModel('', []);
   final TextEditingController _questionTextController = TextEditingController();
 
   @override
@@ -94,7 +94,7 @@ class _EditQuestionSectionState extends State<EditQuestionSection> {
   void _handleResetForm() {
     _formKey.currentState!.reset();
     setState(() {
-      _currentQuestionModel = QuestionModel('', [], []);
+      _currentQuestionModel = QuestionModel('', []);
     });
   }
 

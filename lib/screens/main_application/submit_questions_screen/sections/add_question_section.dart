@@ -15,7 +15,7 @@ class AddQuestionSection extends StatefulWidget {
 class _AddQuestionSectionState extends State<AddQuestionSection> {
   final _formKey = GlobalKey<FormState>();
 
-  QuestionModel _currentQuestionModel = QuestionModel('', [], []);
+  QuestionModel _currentQuestionModel = QuestionModel('', []);
 
   void _handleChangeQuestionTextField(String value) {
     setState(() {
@@ -76,7 +76,7 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
   void _handleResetForm() {
     _formKey.currentState!.reset();
     setState(() {
-      _currentQuestionModel = QuestionModel('', [], []);
+      _currentQuestionModel = QuestionModel('', []);
     });
   }
 

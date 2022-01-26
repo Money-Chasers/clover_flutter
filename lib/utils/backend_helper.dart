@@ -70,15 +70,12 @@ class BackendHelper {
   static Future addQuestionPaper(PaperModel paperModel) {
     final _batchQuestions = _firestoreInstance.batch();
     final List<String> _questionIds = [];
-    final _tagsUnion = <String>{};
     for (QuestionModel questionModel in paperModel.questionModels) {
       var docRef = _firestoreInstance.collection("questions").doc();
       _questionIds.add(docRef.id);
-      _tagsUnion.union(questionModel.questionTags.toSet());
       _batchQuestions.set(
           docRef,
-          QuestionModel(
-                  questionModel.questionText, questionModel.options, questionModel.questionTags)
+          QuestionModel(questionModel.questionText, questionModel.options)
               .toJSON());
     }
     Future future1 = _batchQuestions.commit();

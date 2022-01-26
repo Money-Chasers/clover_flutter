@@ -1,8 +1,10 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:clover_flutter/screens/main_application/attempt_paper_screen/attempt_paper_screen.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/settings_screen/settings_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
+import 'package:clover_flutter/utils/dev_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,6 +27,13 @@ class _MyDrawerState extends State<MyDrawer> {
             context,
             MaterialPageRoute(
                 builder: (context) => const PaperDetailsSection()));
+        break;
+      case (2):
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AttemptPaperScreen(paperModel: getFakePaperModel())));
         break;
       default:
         Navigator.pushReplacement(context,
@@ -107,6 +116,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         AppLocalizations.of(context)!.submitQuestions,
                         Icons.question_answer,
                         1),
+                    _buildNavigationDrawerTile(
+                        'Demo attempt paper', Icons.receipt, 2),
                   ],
                 ),
               ),
