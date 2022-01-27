@@ -4,6 +4,7 @@ import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
 
 class AddQuestionSection extends StatefulWidget {
   const AddQuestionSection({Key? key}) : super(key: key);
@@ -15,7 +16,8 @@ class AddQuestionSection extends StatefulWidget {
 class _AddQuestionSectionState extends State<AddQuestionSection> {
   final _formKey = GlobalKey<FormState>();
 
-  QuestionModel _currentQuestionModel = QuestionModel('', []);
+  QuestionModel _currentQuestionModel =
+      QuestionModel(const Uuid().v1(), '', []);
 
   void _handleChangeQuestionTextField(String value) {
     setState(() {
@@ -76,7 +78,7 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
   void _handleResetForm() {
     _formKey.currentState!.reset();
     setState(() {
-      _currentQuestionModel = QuestionModel('', []);
+      _currentQuestionModel = QuestionModel(const Uuid().v1(), '', []);
     });
   }
 

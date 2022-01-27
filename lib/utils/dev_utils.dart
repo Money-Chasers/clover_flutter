@@ -2,17 +2,19 @@ import 'dart:math';
 
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:faker/faker.dart';
+import 'package:uuid/uuid.dart';
+
+var faker = Faker();
 
 PaperModel getFakePaperModel() {
-  final faker = Faker();
-
   int nQuestionModels = 5;
   List<QuestionModel> questionModels = [];
   for (int i = 0; i < nQuestionModels; i++) {
     questionModels.add(getFakeQuestionModel());
   }
 
-  return PaperModel(faker.lorem.words(2).join(' '), questionModels, [2, 0], true);
+  return PaperModel(const Uuid().v1(), faker.lorem.words(2).join(' '),
+      questionModels, [2, 0], true);
 }
 
 QuestionModel getFakeQuestionModel() {
@@ -22,7 +24,8 @@ QuestionModel getFakeQuestionModel() {
     options.add(getFakeOptionModel());
   }
 
-  return QuestionModel(faker.lorem.words(10).join(' ').toString(), options);
+  return QuestionModel(
+      const Uuid().v1(), faker.lorem.words(10).join(' ').toString(), options);
 }
 
 OptionModel getFakeOptionModel() {

@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 class QuestionPaperAttemptState {
   final BehaviorSubject<PaperModel> _questionPaper =
-      BehaviorSubject.seeded(PaperModel('', [], [0, 0], true));
+      BehaviorSubject.seeded(PaperModel('', '', [], [0, 0], true));
 
   Stream get stream$ => _questionPaper.stream;
   PaperModel get current => _questionPaper.value;
@@ -14,4 +14,5 @@ class QuestionPaperAttemptState {
   }
 }
 
-QuestionPaperAttemptState questionPaperAttemptService = QuestionPaperAttemptState();
+QuestionPaperAttemptState questionPaperAttemptService =
+    QuestionPaperAttemptState();

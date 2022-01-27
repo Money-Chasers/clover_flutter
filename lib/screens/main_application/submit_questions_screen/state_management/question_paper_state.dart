@@ -1,9 +1,10 @@
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:uuid/uuid.dart';
 
 class QuestionPaperState {
-  final BehaviorSubject<PaperModel> _questionPaper =
-      BehaviorSubject.seeded(PaperModel('', [], [0, 0], true));
+  final BehaviorSubject<PaperModel> _questionPaper = BehaviorSubject.seeded(
+      PaperModel(const Uuid().v1(), '', [], [0, 0], true));
 
   Stream get stream$ => _questionPaper.stream;
   PaperModel get current => _questionPaper.value;
@@ -14,7 +15,7 @@ class QuestionPaperState {
   }
 
   void reset() {
-    _questionPaper.add(PaperModel('', [], [0, 0], true));
+    _questionPaper.add(PaperModel(const Uuid().v1(), '', [], [0, 0], true));
   }
 }
 

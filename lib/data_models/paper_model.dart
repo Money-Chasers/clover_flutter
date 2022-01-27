@@ -1,16 +1,22 @@
 class PaperModel {
+  String paperId;
   String paperTitle;
   List<QuestionModel> questionModels;
   List<int> duration;
   bool isPublic;
 
-  PaperModel(
-      this.paperTitle, this.questionModels, this.duration, this.isPublic);
+  PaperModel(this.paperId, this.paperTitle, this.questionModels, this.duration,
+      this.isPublic);
 
-  Map<String, dynamic> toJSON(List<String> questionIds) {
+  Map<String, dynamic> toJSON() {
     Map<String, dynamic> map = {};
+    map['paperId'] = paperId;
     map['paperTitle'] = paperTitle;
+
+    List<String> questionIds =
+        questionModels.map((e) => e.questionId).toList(growable: false);
     map['questionIds'] = questionIds;
+
     map['duration'] = duration;
     map['isPublic'] = isPublic;
 
@@ -19,13 +25,15 @@ class PaperModel {
 }
 
 class QuestionModel {
+  String questionId;
   String questionText;
   List<OptionModel> options;
 
-  QuestionModel(this.questionText, this.options);
+  QuestionModel(this.questionId, this.questionText, this.options);
 
   Map<String, dynamic> toJSON() {
     Map<String, dynamic> map = {};
+    map['questionId'] = questionId;
     map['questionText'] = questionText;
     map['questionIds'] = options.map((e) => e.toJSON()).toList(growable: false);
 

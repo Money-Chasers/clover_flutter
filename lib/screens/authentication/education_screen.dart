@@ -12,7 +12,6 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
-
   final _authInstance = FirebaseAuth.instance;
   final _firestoreInstance = FirebaseFirestore.instance;
 
@@ -117,14 +116,15 @@ class _EducationScreenState extends State<EducationScreen> {
                                     _firestoreInstance
                                         .collection('users')
                                         .doc(snapshot.docs[0].id)
-                                        .update({'education': _education}).then(
-                                            (value) =>
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const DashboardSection()),
-                                                    (e) => false))
+                                        .update({
+                                      'education': _education
+                                    }).then((value) =>
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const DashboardSection()),
+                                                (e) => false))
                                   });
                         }
                       },

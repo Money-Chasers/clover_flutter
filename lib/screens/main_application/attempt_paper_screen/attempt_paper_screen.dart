@@ -2,6 +2,7 @@ import 'package:clover_flutter/components/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/paper_analysis_screen.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 class AttemptPaperScreen extends StatefulWidget {
@@ -28,12 +29,48 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
     return paperModel.questionModels[index];
   }
 
+  void _handleConfirmLeaveTest() {
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const DashboardSection()),
+        (route) => false);
+  }
+
+  void _handleCancelLeaveTest() {
+    Navigator.pop(context);
+  }
+
   void _handlePreviousButtonClick() {
     if (_currentQuestionIndex > 0) {
       setState(() {
         _currentQuestionIndex -= 1;
       });
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          content: const Text('Do you really want to leave the test ?'),
+          actions: [
+            TextButton(
+                onPressed: _handleCancelLeaveTest, child: const Text('No')),
+            TextButton(
+                onPressed: _handleConfirmLeaveTest, child: const Text('Yes'))
+          ],
+        ),
+      );
     }
+  }
+
+  void _handleConfirmSubmitTest() {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PaperAnalysisScreen(correctPaperModel: widget.paperModel)));
+  }
+
+  void _handleCancelSubmitTest() {
+    Navigator.pop(context);
   }
 
   void _handleNextButtonClick() {
@@ -42,11 +79,18 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
         _currentQuestionIndex += 1;
       });
     } else {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  PaperAnalysisScreen(correctPaperModel: widget.paperModel)));
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          content: const Text('Do you really want to submit the test ?'),
+          actions: [
+            TextButton(
+                onPressed: _handleCancelSubmitTest, child: const Text('No')),
+            TextButton(
+                onPressed: _handleConfirmSubmitTest, child: const Text('Yes'))
+          ],
+        ),
+      );
     }
   }
 
@@ -86,13 +130,69 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
     return _optionsList;
   }
 
-  Widget _buildQuestionChangeButton(String text, Function callbackFunction) {
-    return Expanded(
-      child: ElevatedButton(
-        onPressed: () {
-          callbackFunction();
-        },
-        child: Text(text),
+  void _handleCancelChooseQuestionModal() {
+    Navigator.pop(context);
+  }
+
+  void _handleChooseQuestion(int index) {
+    setState(() {
+      _currentQuestionIndex = index;
+    });
+    Navigator.pop(context);
+  }
+
+  Widget _buildChooseQuestionModalItem(int index) {
+    return ElevatedButton(
+      onPressed: () {
+        _handleChooseQuestion(index);
+      },
+      child: Text(
+        (index + 1).toString(),
+      ),
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(),
+        padding: const EdgeInsets.all(10),
+      ),
+    );
+  }
+
+  List<Widget> _buildChooseQuestionModalItems(int nItems) {
+    List<Widget> items = [];
+    for (int i = 0; i < nItems; i++) {
+      items.add(_buildChooseQuestionModalItem(i));
+    }
+    return items;
+  }
+
+  void _showChooseQuestionList() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) => Container(
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          color: Colors.white,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 7,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+                children: _buildChooseQuestionModalItems(
+                    widget.paperModel.questionModels.length),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _handleCancelChooseQuestionModal,
+              child: const Text('Cancel'),
+              style: ElevatedButton.styleFrom(primary: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -150,17 +250,50 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
             ),
           ),
         ),
-        Row(
-          children: [
-            _buildQuestionChangeButton(
-                _currentQuestionIndex == 0 ? 'Leave test' : 'Previous',
-                _handlePreviousButtonClick),
-            _buildQuestionChangeButton(
-                _currentQuestionIndex == paperModel.questionModels.length - 1
-                    ? 'Submit test'
-                    : 'Next',
-                _handleNextButtonClick),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _handlePreviousButtonClick,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.arrow_left),
+                      Text(_currentQuestionIndex == 0
+                          ? 'Leave test'
+                          : 'Previous'),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: _showChooseQuestionList,
+                child: const Icon(Icons.menu),
+                style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(10)),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _handleNextButtonClick,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(_currentQuestionIndex ==
+                              paperModel.questionModels.length - 1
+                          ? 'Submit test'
+                          : 'Next'),
+                      const Icon(Icons.arrow_right),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         )
       ],
     );
