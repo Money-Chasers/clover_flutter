@@ -1,7 +1,7 @@
 import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/submit_paper_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
@@ -61,10 +61,10 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
 
   void _confirmAddQuestion() {
     if (_formKey.currentState!.validate()) {
-      PaperModel _currentPaperModel = questionPaperService.current;
-      questionPaperService.current.questionModels.add(_currentQuestionModel);
-
-      questionPaperService.update(_currentPaperModel);
+      submitPaperBloc.submitPaperEventSink.add({
+        'type': submitPaperActions.addQuestion,
+        'payload': (_currentQuestionModel),
+      });
       Navigator.pop(context);
     }
   }
@@ -218,28 +218,10 @@ class _AddQuestionSectionState extends State<AddQuestionSection> {
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
-        stream: questionPaperService.stream$,
+        stream: submitPaperBloc.submitPaperStream,
+        initialData: submitPaperBloc.current,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          switch (snap.connectionState) {
-            case (ConnectionState.none):
-            case ConnectionState.waiting:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-            case ConnectionState.active:
-            case ConnectionState.done:
-              if (snap.hasError) {
-                return const Center(
-                  child: Text('An error occurred!'),
-                );
-              } else {
-                return _buildMainWidget(snap.data);
-              }
-            default:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-          }
+          return _buildMainWidget(snap.data);
         },
       ),
     );

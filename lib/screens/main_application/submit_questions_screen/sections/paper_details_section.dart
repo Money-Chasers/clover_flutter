@@ -2,7 +2,7 @@ import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/create_paper_section.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/submit_paper_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_picker/Picker.dart';
@@ -28,24 +28,32 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
     super.initState();
 
     // set from previous values if available.
-    PaperModel _currentPaperModel = questionPaperService.current;
+    PaperModel _currentPaperModel = submitPaperBloc.current;
     _paperTitleController.text = _currentPaperModel.paperTitle;
 
     int hours = _currentPaperModel.duration[0];
     int minutes = _currentPaperModel.duration[1];
-    _attemptDurationController.text  = _convertDurationListToString(hours, minutes);
+    _attemptDurationController.text =
+        _convertDurationListToString(hours, minutes);
     _attemptDurationList[0] = hours;
     _attemptDurationList[1] = minutes;
     _isQuestionPublic = _currentPaperModel.isPublic;
   }
 
-  void _handleButtonClick() {
+  void _handleSubmitButtonClick() {
     if (_formKey.currentState!.validate()) {
-      PaperModel paperModel = questionPaperService.current;
-      paperModel.paperTitle = _paperTitleController.text;
-      paperModel.duration = _attemptDurationList;
-      paperModel.isPublic = _isQuestionPublic;
-      questionPaperService.update(paperModel);
+      submitPaperBloc.submitPaperEventSink.add({
+        'type': submitPaperActions.updateTitle,
+        'payload': _paperTitleController.text
+      });
+      submitPaperBloc.submitPaperEventSink.add({
+        'type': submitPaperActions.updateDuration,
+        'payload': _attemptDurationList
+      });
+      submitPaperBloc.submitPaperEventSink.add({
+        'type': submitPaperActions.updateIsPublic,
+        'payload': _isQuestionPublic
+      });
 
       // Now navigate to the next page
       Navigator.pushReplacement(context,
@@ -62,11 +70,11 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
 
   String _convertDurationListToString(int hours, int minutes) {
     String _hoursString = '';
-    if (hours> 0) {
+    if (hours > 0) {
       _hoursString = hours.toString() + " hours ";
     }
     String _minutesString = '';
-    if (minutes> 0) {
+    if (minutes > 0) {
       _minutesString = minutes.toString() + " minutes";
     }
 
@@ -80,7 +88,8 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
     setState(() {
       _attemptDurationList[0] = hours;
       _attemptDurationList[1] = minutes;
-      _attemptDurationController.text = _convertDurationListToString(hours, minutes);
+      _attemptDurationController.text =
+          _convertDurationListToString(hours, minutes);
     });
   }
 
@@ -165,7 +174,7 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
                     )
                   ],
                 ),
-                buildButton(context, 'Create', _handleButtonClick)
+                buildButton(context, 'Create', _handleSubmitButtonClick)
               ],
             ),
           ),
@@ -182,28 +191,10 @@ class _PaperDetailsSectionState extends State<PaperDetailsSection> {
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
-        stream: questionPaperService.stream$,
+        stream: submitPaperBloc.submitPaperStream,
+        initialData: submitPaperBloc.current,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          switch (snap.connectionState) {
-            case (ConnectionState.none):
-            case ConnectionState.waiting:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-            case ConnectionState.active:
-            case ConnectionState.done:
-              if (snap.hasError) {
-                return const Center(
-                  child: Text('An error occurred!'),
-                );
-              } else {
-                return _buildMainWidget(snap.data);
-              }
-            default:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-          }
+          return _buildMainWidget(snap.data);
         },
       ),
     );

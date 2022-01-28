@@ -5,7 +5,7 @@ import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboa
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/add_question_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/edit_question_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/submit_paper_bloc.dart';
 import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -18,13 +18,12 @@ class CreatePaperSection extends StatefulWidget {
 
 class _CreatePaperSectionState extends State<CreatePaperSection> {
   void _handleSaveClick() {
-    BackendHelper.addQuestionPaper(questionPaperService.current).then((value) {
+    BackendHelper.addQuestionPaper(submitPaperBloc.current).then((value) {
       buildSnackBarMessage(context, 'Task completed successfully!');
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const DashboardSection()),
           (route) => false);
-      questionPaperService.reset();
     }).onError(
         (error, stackTrace) => buildSnackBarMessage(context, 'Task failed!'));
   }
@@ -53,17 +52,8 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
 
   void _handleQuestionDeleteClick(int index) {
     // get updated questionModels list.
-    List<QuestionModel> _tempQuestionModels = [];
-    questionPaperService.current.questionModels.asMap().forEach((key, value) {
-      if (key != index) {
-        _tempQuestionModels.add(value);
-      }
-    });
-
-    // now create a new paperModel with this list and add it to the stream.
-    PaperModel _tempPaperModel = questionPaperService.current;
-    _tempPaperModel.questionModels = _tempQuestionModels;
-    questionPaperService.update(_tempPaperModel);
+    submitPaperBloc.submitPaperEventSink
+        .add({'type': submitPaperActions.removeQuestion, 'payload': index});
   }
 
   void _handleQuestionEditClick(int index) {
@@ -200,28 +190,11 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
-        stream: questionPaperService.stream$,
+        stream: submitPaperBloc.submitPaperStream,
+        initialData: submitPaperBloc.current,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          switch (snap.connectionState) {
-            case (ConnectionState.none):
-            case ConnectionState.waiting:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-            case ConnectionState.active:
-            case ConnectionState.done:
-              if (snap.hasError) {
-                return const Center(
-                  child: Text('An error occurred!'),
-                );
-              } else {
-                return _buildMainWidget(snap.data);
-              }
-            default:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-          }
+          print(snap.data.paperTitle);
+          return _buildMainWidget(snap.data);
         },
       ),
       floatingActionButton: FloatingActionButton(
