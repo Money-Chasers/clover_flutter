@@ -1,5 +1,5 @@
 import 'package:clover_flutter/components/common_widgets.dart';
-import 'package:clover_flutter/components/drawer.dart';
+import 'package:clover_flutter/components/drawer/component/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/add_question_section.dart';

@@ -1,4 +1,4 @@
-import 'package:clover_flutter/components/drawer.dart';
+import 'package:clover_flutter/components/drawer/component/drawer.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/attempt_paper_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';

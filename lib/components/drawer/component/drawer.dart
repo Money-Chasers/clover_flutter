@@ -1,3 +1,4 @@
+import 'package:clover_flutter/components/drawer/state_management/drawer_bloc.dart';
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/attempt_paper_bloc.dart';
@@ -18,6 +19,9 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   void _navigateScreen(int screenId) {
+    drawerBloc.attemptPaperEventSink
+        .add({'type': drawerActions.changeIndex, 'payload': screenId});
+
     switch (screenId) {
       case (0):
         Navigator.pushReplacement(context,
@@ -45,13 +49,17 @@ class _MyDrawerState extends State<MyDrawer> {
     }
   }
 
-  Widget _buildNavigationDrawerTile(text, icon, screenId) {
+  Widget _buildNavigationDrawerTile(
+      String text, IconData icon, int myScreenId, int currentScreenId) {
     return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
+          color: myScreenId == currentScreenId
+              ? Theme.of(context).primaryColorLight
+              : Colors.transparent,
         ),
         child: Row(
           children: [
@@ -62,7 +70,7 @@ class _MyDrawerState extends State<MyDrawer> {
         ),
       ),
       onTap: () {
-        _navigateScreen(screenId);
+        _navigateScreen(myScreenId);
       },
     );
   }
@@ -81,8 +89,7 @@ class _MyDrawerState extends State<MyDrawer> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildMainWidget(int currentIndex) {
     return SafeArea(
       child: Drawer(
         child: Column(
@@ -115,13 +122,15 @@ class _MyDrawerState extends State<MyDrawer> {
                     _buildNavigationDrawerTile(
                         AppLocalizations.of(context)!.dashboard,
                         Icons.dashboard,
-                        0),
+                        0,
+                        currentIndex),
                     _buildNavigationDrawerTile(
                         AppLocalizations.of(context)!.submitQuestions,
                         Icons.question_answer,
-                        1),
+                        1,
+                        currentIndex),
                     _buildNavigationDrawerTile(
-                        'Demo attempt paper', Icons.receipt, 2),
+                        'Demo attempt paper', Icons.receipt, 2, currentIndex),
                   ],
                 ),
               ),
@@ -187,5 +196,15 @@ class _MyDrawerState extends State<MyDrawer> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: drawerBloc.currentIndexStream,
+        initialData: drawerBloc.currentIndex,
+        builder: (BuildContext context, AsyncSnapshot currentIndexSnap) {
+          return _buildMainWidget(currentIndexSnap.data);
+        });
   }
 }
