@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clover_flutter/screens/main_screen/main_screen.dart';
+import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +12,6 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreenState extends State<EducationScreen> {
-
   final _authInstance = FirebaseAuth.instance;
   final _firestoreInstance = FirebaseFirestore.instance;
 
@@ -117,14 +116,15 @@ class _EducationScreenState extends State<EducationScreen> {
                                     _firestoreInstance
                                         .collection('users')
                                         .doc(snapshot.docs[0].id)
-                                        .update({'education': _education}).then(
-                                            (value) =>
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const MainScreen()),
-                                                    (e) => false))
+                                        .update({
+                                      'education': _education
+                                    }).then((value) =>
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const DashboardSection()),
+                                                (e) => false))
                                   });
                         }
                       },

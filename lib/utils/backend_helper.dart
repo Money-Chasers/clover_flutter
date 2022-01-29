@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clover_flutter/data_models/paper_model.dart';
-import 'package:clover_flutter/data_models/question_model.dart';
 import 'package:clover_flutter/data_models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 
 class BackendHelper {
   static final _firestoreInstance = FirebaseFirestore.instance;
@@ -23,7 +23,7 @@ class BackendHelper {
         email: email, password: password);
     Future future2 = _firestoreInstance
         .collection('users')
-        .add(UserModel(name: name, email: email, education: 0).toJson());
+        .add(UserModel(name: name, email: email, education: 0, correspondingQuestions: [], correspondingPapers: []).toJson());
     return Future.wait([future1, future2]);
   }
 
@@ -68,30 +68,32 @@ class BackendHelper {
     });
   }
 
-  static Future addQuestionPaper(
-      String paperTitle, List<QuestionModel> questionModels) {
+  static Future addQuestionPaper(PaperModel paperModel) {
     final _batchQuestions = _firestoreInstance.batch();
-    final List<String> _questionIds = [];
-    final _tagsUnion = <String>{};
-    for (var element in questionModels) {
+    for (QuestionModel questionModel in paperModel.questionModels) {
       var docRef = _firestoreInstance.collection("questions").doc();
-      _questionIds.add(docRef.id);
-      _tagsUnion.union(element.questionTags.toSet());
       _batchQuestions.set(
           docRef,
-          QuestionModel(
-                  element.questionText, element.options, element.questionTags)
-              .toJson());
+          QuestionModel(const Uuid().v1(), questionModel.questionText,
+                  questionModel.options)
+              .toJSON());
     }
     Future future1 = _batchQuestions.commit();
-    Future future2 = _firestoreInstance.collection('questionPapers').add(
-        PaperModel(paperTitle, _questionIds, _tagsUnion.toList(growable: false))
-            .toJson());
+    Future future2 = _firestoreInstance
+        .collection('questionPapers')
+        .add(paperModel.toJSON());
 
     return Future.wait([future1, future2]);
   }
 
-  static Future fetchQuestionPapers() {
+  static fetchQuestionPapers() {
     return _firestoreInstance.collection('questionPapers').get();
+  }
+
+  static fetchQuestions(List<String> questionIds) {
+    return _firestoreInstance
+        .collection('questions')
+        .where(FieldPath.documentId, whereIn: questionIds)
+        .get();
   }
 }

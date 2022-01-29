@@ -1,6 +1,5 @@
 import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/main_screen/navigation_drawer/settings_screen/image_picker.dart';
-import 'package:clover_flutter/utils/common_widgets.dart';
+import 'package:clover_flutter/components/common_widgets.dart';
 import 'package:clover_flutter/utils/shared_preferences_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,18 +31,18 @@ class SettingsScreen extends StatelessWidget {
                 color: Theme.of(context).primaryColorLight,
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 320.0,
-                    height: 320.0,
-                    padding: const EdgeInsets.all(10.0),
-                    child: const ProfileImageWidget(),
+                  Column(
+                    children: [
+                      Text(_authInstance.currentUser!.displayName.toString(),
+                          style: Theme.of(context).textTheme.subtitle2),
+                      Text(_authInstance.currentUser!.email.toString(),
+                          style: Theme.of(context).textTheme.subtitle2)
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
                   ),
-                  Text(_authInstance.currentUser!.displayName.toString(),
-                      style: Theme.of(context).textTheme.subtitle2),
-                  Text(_authInstance.currentUser!.email.toString(),
-                      style: Theme.of(context).textTheme.subtitle2),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -54,9 +53,8 @@ class SettingsScreen extends StatelessWidget {
                     },
                     child: Text(AppLocalizations.of(context)!.accountSettings,
                         style: Theme.of(context).textTheme.button),
-                  ),
+                  )
                 ],
-                crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
             buildSettingsSectionHeader(
