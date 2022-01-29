@@ -1,5 +1,6 @@
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/attempt_paper_screen.dart';
+import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
+import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/attempt_paper_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/settings_screen/settings_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
@@ -29,11 +30,14 @@ class _MyDrawerState extends State<MyDrawer> {
                 builder: (context) => const PaperDetailsSection()));
         break;
       case (2):
+        attemptPaperBloc.attemptPaperEventSink.add({
+          'type': attemptPaperActions.assignFullPaperModel,
+          'payload': getFakePaperModel()
+        });
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    AttemptPaperScreen(paperModel: getFakePaperModel())));
+                builder: (context) => const AttemptPaperScreen()));
         break;
       default:
         Navigator.pushReplacement(context,

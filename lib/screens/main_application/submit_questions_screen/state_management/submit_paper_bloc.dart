@@ -21,7 +21,7 @@ class SubmitPaperBloc {
   Stream<PaperModel> get submitPaperStream => _stateStreamController.stream;
   PaperModel get current => _stateStreamController.value;
 
-  final _eventStreamController = StreamController<Map<String, dynamic>>();
+  final _eventStreamController = BehaviorSubject<Map<String, dynamic>>();
   StreamSink<Map<String, dynamic>> get submitPaperEventSink =>
       _eventStreamController.sink;
   Stream<Map<String, dynamic>> get _submitPaperEventStream =>

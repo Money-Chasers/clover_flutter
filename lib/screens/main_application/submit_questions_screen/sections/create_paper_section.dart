@@ -193,7 +193,6 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
         stream: submitPaperBloc.submitPaperStream,
         initialData: submitPaperBloc.current,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          print(snap.data.paperTitle);
           return _buildMainWidget(snap.data);
         },
       ),
