@@ -1,12 +1,8 @@
-import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/utils/backend_helper.dart';
-import 'package:clover_flutter/components/common_widgets.dart';
-import 'package:clover_flutter/utils/shared_preferences_helper.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:async';
 
-import 'authentication/education_screen.dart';
+import 'package:clover_flutter/bloc/streams/user_bloc.dart';
+import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:flutter/material.dart';
 import 'main_application/dashboard_screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,42 +13,31 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  _SplashScreenState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      final _future1 = _getSettings();
+  late StreamSubscription _signedInStreamSubscription;
 
-      _future1.then((_) async {
-        if (BackendHelper.getCurrentUser != null) {
-          BackendHelper.checkIfEducationIsSet().then((value) {
-            if (value.docs.isEmpty) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const DashboardSection()));
-            } else {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EducationScreen()));
-            }
-          }).catchError((error) {
-            buildSnackBarMessage(
-                context, AppLocalizations.of(context)!.anErrorOccurred);
-          });
-        } else {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const IntroScreen()));
-        }
-      });
+  @override
+  initState() {
+    // handle authentication initialization
+    _signedInStreamSubscription =
+        userBloc.isSignedInStream.listen((bool isSignedIn) {
+      if (isSignedIn) {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const DashboardSection()));
+      } else {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const IntroScreen()));
+      }
     });
+
+    super.initState();
   }
 
-  Future _getSettings() {
-    final _future1 = SharedPreferencesHelper.getLocale();
-    final _future2 = SharedPreferencesHelper.getDarkMode();
+  @override
+  void dispose() {
+    // cancel the stream when disposing the widget
+    _signedInStreamSubscription.cancel();
 
-    return Future.wait([_future1, _future2]).then((value) {
-      MyApp.of(context)!.setLocale(Locale(value[0]));
-      MyApp.of(context)!.setDarkMode(value[1]);
-    });
+    super.dispose();
   }
 
   @override

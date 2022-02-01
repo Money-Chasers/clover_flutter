@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:clover_flutter/bloc/streams/settings_bloc.dart';
 import 'package:clover_flutter/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,37 +21,37 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
-
-  static _MyAppState? of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>();
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('en');
-  bool _darkMode = false;
+  String _locale = settingsBloc.currentLocale;
+  bool _darkMode = settingsBloc.currentDarkMode;
 
-  void setLocale(Locale value) {
-    setState(() {
-      _locale = value;
+  late StreamSubscription _localeStreamSubscription;
+  late StreamSubscription _darkModeStreamSubscription;
+
+  @override
+  void initState() {
+    _localeStreamSubscription = settingsBloc.localeStream.listen((event) {
+      setState(() {
+        _locale = event;
+      });
     });
+    _darkModeStreamSubscription = settingsBloc.darkModeStream.listen((event) {
+      setState(() {
+        _darkMode = event;
+      });
+    });
+
+    super.initState();
   }
 
-  bool getDarkMode() {
-    return _darkMode;
-  }
+  @override
+  void dispose() {
+    _localeStreamSubscription.cancel();
+    _darkModeStreamSubscription.cancel();
 
-  void setDarkMode(String value) {
-    switch (value) {
-      case 'true':
-        setState(() {
-          _darkMode = true;
-        });
-        break;
-      default:
-        setState(() {
-          _darkMode = false;
-        });
-    }
+    super.dispose();
   }
 
   @override
@@ -68,7 +71,7 @@ class _MyAppState extends State<MyApp> {
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: _locale,
+        locale: Locale(_locale),
         home: const SplashScreen());
   }
 }

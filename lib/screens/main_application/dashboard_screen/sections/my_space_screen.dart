@@ -5,6 +5,10 @@ class MySpaceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: const Color(0xFF471823));
+    return Scaffold(
+      body: Container(
+        color: Colors.black,
+      ),
+    );
   }
 }

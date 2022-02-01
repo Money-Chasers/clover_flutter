@@ -1,8 +1,9 @@
-import 'package:clover_flutter/main.dart';
-import 'package:clover_flutter/screens/authentication/education_screen.dart';
+import 'dart:async';
+
+import 'package:clover_flutter/bloc/streams/settings_bloc.dart';
+import 'package:clover_flutter/bloc/streams/user_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
-import 'package:clover_flutter/utils/backend_helper.dart';
-import 'package:clover_flutter/components/common_widgets.dart';
+import 'package:clover_flutter/components/constant_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -19,25 +20,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFieldController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  _handleValidation(email, password) {
-    BackendHelper.signInWithEmailAndPassword(email, password).then((_) {
-      BackendHelper.checkIfEducationIsSet().then((snapshot) {
-        if (snapshot.docs.isEmpty) {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const DashboardSection()),
-              (route) => false);
-        } else {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const EducationScreen()),
-              (route) => false);
-        }
-      });
-    }).catchError((error) {
-      buildSnackBarMessage(
-          context, AppLocalizations.of(context)!.anErrorOccurred);
+  late StreamSubscription _isSignedInStreamSubscription;
+
+  @override
+  void initState() {
+    _isSignedInStreamSubscription =
+        userBloc.isSignedInStream.listen((bool isSignedIn) {
+      if (isSignedIn) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const DashboardSection()),
+            (route) => false);
+      }
     });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _isSignedInStreamSubscription.cancel();
+
+    super.dispose();
+  }
+
+  String? _validateTextField(String? value) {
+    if (value == null || value.isEmpty) {
+      return AppLocalizations.of(context)!.fieldRequired;
+    }
+    return null;
   }
 
   @override
@@ -66,66 +77,76 @@ class _LoginScreenState extends State<LoginScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          TextFormField(
-                              controller: _emailFieldController,
-                              autofillHints: const [AutofillHints.email],
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(context)!
-                                      .fieldRequired;
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: MyApp.of(context)!.getDarkMode()
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
-                                border: const OutlineInputBorder(),
-                                hintText:
-                                    AppLocalizations.of(context)!.enterEmail,
-                                prefixIcon: const Icon(Icons.email),
-                              ),
-                              style: Theme.of(context).textTheme.subtitle2),
+                          StreamBuilder(
+                              initialData: false,
+                              stream: settingsBloc.darkModeStream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<bool> snap) {
+                                return TextFormField(
+                                    controller: _emailFieldController,
+                                    autofillHints: const [AutofillHints.email],
+                                    validator: _validateTextField,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: snap.data!
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
+                                      border: const OutlineInputBorder(),
+                                      hintText: AppLocalizations.of(context)!
+                                          .enterEmail,
+                                      prefixIcon: const Icon(Icons.email),
+                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2);
+                              }),
                           const SizedBox(height: 20),
-                          TextFormField(
-                              controller: _passwordFieldController,
-                              autofillHints: const [AutofillHints.password],
-                              obscureText: !_isPasswordVisible,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return AppLocalizations.of(context)!
-                                      .fieldRequired;
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: MyApp.of(context)!.getDarkMode()
-                                    ? Theme.of(context).primaryColor
-                                    : Colors.white,
-                                border: const OutlineInputBorder(),
-                                hintText:
-                                    AppLocalizations.of(context)!.enterPassword,
-                                prefixIcon: const Icon(Icons.password),
-                                suffixIcon: InkWell(
-                                  child: _isPasswordVisible
-                                      ? const Icon(Icons.visibility)
-                                      : const Icon(Icons.visibility_off),
-                                  onTap: () {
-                                    setState(() {
-                                      _isPasswordVisible = !_isPasswordVisible;
-                                    });
-                                  },
-                                ),
-                              ),
-                              style: Theme.of(context).textTheme.subtitle2),
+                          StreamBuilder(
+                              initialData: false,
+                              stream: settingsBloc.darkModeStream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<bool> snap) {
+                                return TextFormField(
+                                    controller: _passwordFieldController,
+                                    autofillHints: const [
+                                      AutofillHints.password
+                                    ],
+                                    obscureText: !_isPasswordVisible,
+                                    validator: _validateTextField,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: snap.data!
+                                          ? Theme.of(context).primaryColor
+                                          : Colors.white,
+                                      border: const OutlineInputBorder(),
+                                      hintText: AppLocalizations.of(context)!
+                                          .enterPassword,
+                                      prefixIcon: const Icon(Icons.password),
+                                      suffixIcon: InkWell(
+                                        child: _isPasswordVisible
+                                            ? const Icon(Icons.visibility)
+                                            : const Icon(Icons.visibility_off),
+                                        onTap: () {
+                                          setState(() {
+                                            _isPasswordVisible =
+                                                !_isPasswordVisible;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2);
+                              }),
                           const SizedBox(height: 20),
                           buildButton(
                               context, AppLocalizations.of(context)!.login, () {
                             if (_formKey.currentState!.validate()) {
-                              _handleValidation(_emailFieldController.text,
-                                  _passwordFieldController.text);
+                              userBloc.eventSink.add({
+                                'type': userActions.signInWithEmailAndPassword,
+                                'payload': {
+                                  'email': _emailFieldController.text,
+                                  'password': _passwordFieldController.text,
+                                }
+                              });
                             }
                           })
                         ],

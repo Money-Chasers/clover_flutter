@@ -1,10 +1,10 @@
-import 'package:clover_flutter/components/drawer/component/drawer.dart';
+import 'package:clover_flutter/components/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'home_screen.dart';
-import 'my_space_screen.dart';
-import 'trending_screen.dart';
+import 'sections/home_screen.dart';
+import 'sections/my_space_screen.dart';
+import 'sections/trending_screen.dart';
 
 class DashboardSection extends StatefulWidget {
   const DashboardSection({Key? key}) : super(key: key);

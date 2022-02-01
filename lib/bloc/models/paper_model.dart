@@ -8,7 +8,7 @@ class PaperModel {
   PaperModel(this.paperId, this.paperTitle, this.questionModels, this.duration,
       this.isPublic);
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toDatabaseJSON() {
     Map<String, dynamic> map = {};
     map['paperId'] = paperId;
     map['paperTitle'] = paperTitle;
@@ -31,11 +31,12 @@ class QuestionModel {
 
   QuestionModel(this.questionId, this.questionText, this.options);
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toDatabaseJSON() {
     Map<String, dynamic> map = {};
     map['questionId'] = questionId;
     map['questionText'] = questionText;
-    map['questionIds'] = options.map((e) => e.toJSON()).toList(growable: false);
+    map['questionIds'] =
+        options.map((e) => e.toDatabaseJSON()).toList(growable: false);
 
     return map;
   }
@@ -47,7 +48,7 @@ class OptionModel {
 
   OptionModel(this.text, this.isCorrect);
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toDatabaseJSON() {
     Map<String, dynamic> map = {};
     map['text'] = text;
     map['isCorrect'] = isCorrect;

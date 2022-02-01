@@ -1,11 +1,10 @@
-import 'package:clover_flutter/components/drawer/state_management/drawer_bloc.dart';
+import 'package:clover_flutter/bloc/streams/drawer_bloc.dart';
+import 'package:clover_flutter/repository/authentication_helper.dart';
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/attempt_paper_bloc.dart';
+import 'package:clover_flutter/bloc/streams/attempt_paper_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
-import 'package:clover_flutter/screens/main_application/settings_screen/settings_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
-import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/dev_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -143,12 +142,7 @@ class _MyDrawerState extends State<MyDrawer> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildDrawerButton(Icons.settings, () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SettingsScreen()));
-                  }),
+                  _buildDrawerButton(Icons.settings, () {}),
                   _buildDrawerButton(
                     Icons.power_settings_new,
                     () {
@@ -174,7 +168,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                           .textTheme
                                           .subtitle1),
                                   onPressed: () {
-                                    BackendHelper.signOut().then((_) {
+                                    AuthenticationHelper.signOut().then((_) {
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clover_flutter/data_models/paper_model.dart';
+import 'package:clover_flutter/bloc/models/paper_model.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum attemptPaperActions {
