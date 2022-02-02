@@ -45,10 +45,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             icon: const Icon(Icons.trending_up),
             label: AppLocalizations.of(context)!.trending,
           ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.inbox),
-            label: AppLocalizations.of(context)!.mySpace,
-          ),
         ],
         onTap: (index) {
           setState(() {

@@ -22,6 +22,9 @@ class UserBloc {
       BehaviorSubject.seeded(false);
   Stream<bool> get isSignedInStream => _isSignedInStreamController.stream;
 
+  final BehaviorSubject<List<Object>> _bookmarksStreamController = BehaviorSubject.seeded([]);
+  Stream<List<Object>> get bookmarksStream => _bookmarksStreamController.stream;
+
   final PublishSubject<Map<String, dynamic>> _eventStreamController =
       PublishSubject();
   StreamSink<Map<String, dynamic>> get eventSink => _eventStreamController.sink;
@@ -30,9 +33,11 @@ class UserBloc {
 
   UserBloc() {
     _currentUserStream.listen((UserModel userModel) {
-      bool _isSignedIn = userModel.isSignedIn;
+      // handle signed in state
+      _isSignedInStreamController.add(userModel.isSignedIn);
 
-      _isSignedInStreamController.add(_isSignedIn);
+      // handle bookmarks state
+      
     });
 
     _eventStream.listen((event) {

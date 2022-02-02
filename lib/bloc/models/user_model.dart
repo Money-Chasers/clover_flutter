@@ -3,7 +3,10 @@ class UserModel {
   UserDetails userDetails;
   bool isSignedIn;
 
-  UserModel({required this.userId, required this.userDetails, required this.isSignedIn});
+  UserModel(
+      {required this.userId,
+      required this.userDetails,
+      required this.isSignedIn});
 
   Map<String, dynamic> toDatabaseJSON() {
     final Map<String, dynamic> data = <String, dynamic>{};

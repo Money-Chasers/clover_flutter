@@ -6,6 +6,7 @@ import 'package:clover_flutter/screens/authentication/login_screen.dart';
 import 'package:clover_flutter/screens/authentication/register_screen.dart';
 import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
+import 'package:clover_flutter/screens/main_application/my_space_screen/my_space_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -70,6 +71,7 @@ class _MyAppState extends State<MyApp> {
           '/dashboard': (context) => const DashboardScreen(),
           '/attemptQuestions': (context) => const AttemptPaperScreen(),
           '/paperDetails': (context) => const PaperDetailsSection(),
+          '/mySpace': (context) => const MySpaceScreen(),
         },
         title: 'Clover',
         themeMode: _darkMode ? ThemeMode.dark : ThemeMode.light,

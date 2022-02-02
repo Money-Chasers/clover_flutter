@@ -31,6 +31,9 @@ class _MyDrawerState extends State<MyDrawer> {
         });
         Navigator.of(context).pushReplacementNamed('/demoAttemptPaper');
         break;
+      case (3):
+        Navigator.of(context).pushReplacementNamed('/mySpace');
+        break;
       default:
         Navigator.of(context).pushReplacementNamed('/dashboard');
     }
@@ -118,6 +121,8 @@ class _MyDrawerState extends State<MyDrawer> {
                         currentIndex),
                     _buildNavigationDrawerTile(
                         'Demo attempt paper', Icons.receipt, 2, currentIndex),
+                    _buildNavigationDrawerTile(
+                        'My space', Icons.inbox, 3, currentIndex),
                   ],
                 ),
               ),
@@ -155,7 +160,8 @@ class _MyDrawerState extends State<MyDrawer> {
                                     style:
                                         Theme.of(context).textTheme.subtitle1),
                                 onPressed: () {
-                                  Navigator.of(context).pushNamedAndRemoveUntil('/intro', (route) => false);
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                      '/intro', (route) => false);
                                   userBloc.eventSink
                                       .add({'type': userActions.signOut});
                                 },
