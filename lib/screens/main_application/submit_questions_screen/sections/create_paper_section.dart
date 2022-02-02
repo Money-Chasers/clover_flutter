@@ -22,7 +22,7 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
       buildSnackBarMessage(context, 'Task completed successfully!');
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const DashboardSection()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
           (route) => false);
     }).onError(
         (error, stackTrace) => buildSnackBarMessage(context, 'Task failed!'));

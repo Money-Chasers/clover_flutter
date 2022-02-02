@@ -33,7 +33,7 @@ class AuthenticationHelper {
         email: email, password: password);
   }
 
-  static Future signOut() {
+  static Future<void> signOut() {
     return _authInstance.signOut();
   }
 

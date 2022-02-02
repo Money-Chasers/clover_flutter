@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (isSignedIn) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const DashboardSection()),
+            MaterialPageRoute(builder: (context) => const DashboardScreen()),
             (route) => false);
       }
     });

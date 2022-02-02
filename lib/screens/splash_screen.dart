@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:clover_flutter/bloc/streams/user_bloc.dart';
-import 'package:clover_flutter/screens/authentication/intro_screen.dart';
 import 'package:flutter/material.dart';
-import 'main_application/dashboard_screen/dashboard_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,11 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
     _signedInStreamSubscription =
         userBloc.isSignedInStream.listen((bool isSignedIn) {
       if (isSignedIn) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const DashboardSection()));
+        Navigator.of(context).pushReplacementNamed('/dashboard');
       } else {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const IntroScreen()));
+        Navigator.of(context).pushReplacementNamed('/intro');
       }
     });
 

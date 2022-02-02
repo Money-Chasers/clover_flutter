@@ -1,10 +1,6 @@
 import 'package:clover_flutter/bloc/streams/drawer_bloc.dart';
-import 'package:clover_flutter/repository/authentication_helper.dart';
-import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
+import 'package:clover_flutter/bloc/streams/user_bloc.dart';
 import 'package:clover_flutter/bloc/streams/attempt_paper_bloc.dart';
-import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/utils/dev_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -23,28 +19,20 @@ class _MyDrawerState extends State<MyDrawer> {
 
     switch (screenId) {
       case (0):
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const DashboardSection()));
+        Navigator.of(context).pushReplacementNamed('/dashboard');
         break;
       case (1):
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const PaperDetailsSection()));
+        Navigator.of(context).pushReplacementNamed('/paperDetails');
         break;
       case (2):
         attemptPaperBloc.attemptPaperEventSink.add({
           'type': attemptPaperActions.assignFullPaperModel,
           'payload': getFakePaperModel()
         });
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AttemptPaperScreen()));
+        Navigator.of(context).pushReplacementNamed('/demoAttemptPaper');
         break;
       default:
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const DashboardSection()));
+        Navigator.of(context).pushReplacementNamed('/dashboard');
     }
   }
 
@@ -163,20 +151,15 @@ class _MyDrawerState extends State<MyDrawer> {
                                 },
                               ),
                               TextButton(
-                                  child: Text(AppLocalizations.of(context)!.yes,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .subtitle1),
-                                  onPressed: () {
-                                    AuthenticationHelper.signOut().then((_) {
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const IntroScreen()),
-                                          (route) => false);
-                                    });
-                                  }),
+                                child: Text(AppLocalizations.of(context)!.yes,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1),
+                                onPressed: () {
+                                  Navigator.of(context).pushNamedAndRemoveUntil('/intro', (route) => false);
+                                  userBloc.eventSink
+                                      .add({'type': userActions.signOut});
+                                },
+                              ),
                             ],
                           );
                         },

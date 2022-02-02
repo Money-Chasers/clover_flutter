@@ -187,7 +187,7 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const DashboardSection()),
+                                              const DashboardScreen()),
                                       (route) => false);
                                 },
                                 child: const Text('Yes'))
@@ -243,7 +243,7 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const DashboardSection()));
+                                              const DashboardScreen()));
                                 },
                                 child: const Text('Yes'))
                           ],

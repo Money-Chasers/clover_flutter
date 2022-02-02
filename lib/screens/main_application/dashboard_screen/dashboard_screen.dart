@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'sections/home_screen.dart';
-import 'sections/my_space_screen.dart';
 import 'sections/trending_screen.dart';
 
-class DashboardSection extends StatefulWidget {
-  const DashboardSection({Key? key}) : super(key: key);
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
-  State<DashboardSection> createState() => _DashboardSectionState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardSectionState extends State<DashboardSection> {
+class _DashboardScreenState extends State<DashboardScreen> {
   int _bottomNavigationCurrentIndex = 0;
 
   _getBottomNavigationView(index) {
@@ -22,8 +21,8 @@ class _DashboardSectionState extends State<DashboardSection> {
         return const HomeScreen();
       case (1):
         return const TrendingScreen();
-      case (2):
-        return const MySpaceScreen();
+      default:
+        return const HomeScreen();
     }
   }
 

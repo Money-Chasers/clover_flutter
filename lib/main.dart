@@ -1,6 +1,12 @@
 import 'dart:async';
 
 import 'package:clover_flutter/bloc/streams/settings_bloc.dart';
+import 'package:clover_flutter/screens/authentication/intro_screen.dart';
+import 'package:clover_flutter/screens/authentication/login_screen.dart';
+import 'package:clover_flutter/screens/authentication/register_screen.dart';
+import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
+import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
+import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
 import 'package:clover_flutter/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +63,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        routes: {
+          '/intro': (context) => const IntroScreen(),
+          '/login': (context)=> const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/dashboard': (context) => const DashboardScreen(),
+          '/attemptQuestions': (context) => const AttemptPaperScreen(),
+          '/paperDetails': (context) => const PaperDetailsSection(),
+        },
         title: 'Clover',
         themeMode: _darkMode ? ThemeMode.dark : ThemeMode.light,
         theme: ThemeData(

@@ -9,6 +9,7 @@ import 'package:rxdart/rxdart.dart';
 enum userActions {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 }
 
 class UserBloc {
@@ -65,6 +66,19 @@ class UserBloc {
               // will handle this later using error codes
             }
           }
+          break;
+        case (userActions.signOut):
+          try {
+            AuthenticationHelper.signOut().then((_) {
+              _currentUserStreamController
+                  .add(AuthenticationHelper.currentUser);
+            });
+          } on FirebaseAuthException catch (exception) {
+            switch (exception.code) {
+              // will handle this later using error codes
+            }
+          }
+          break;
       }
     });
 
