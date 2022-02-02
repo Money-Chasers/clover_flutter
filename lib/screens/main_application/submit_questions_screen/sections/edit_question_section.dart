@@ -1,7 +1,7 @@
-import 'package:clover_flutter/components/common_widgets.dart';
+import 'package:clover_flutter/bloc/models/paper_model.dart';
+import 'package:clover_flutter/components/constant_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
-import 'package:clover_flutter/data_models/paper_model.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/submit_paper_bloc.dart';
+import 'package:clover_flutter/bloc/streams/submit_paper_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';

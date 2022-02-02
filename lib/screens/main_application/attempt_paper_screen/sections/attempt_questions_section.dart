@@ -1,107 +1,17 @@
+import 'package:clover_flutter/bloc/models/paper_model.dart';
 import 'package:clover_flutter/components/drawer.dart';
-import 'package:clover_flutter/data_models/paper_model.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/paper_analysis_screen.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/state_management/question_paper_state.dart';
+import 'package:clover_flutter/bloc/streams/attempt_paper_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 
 class AttemptPaperScreen extends StatefulWidget {
-  final PaperModel paperModel;
-  const AttemptPaperScreen({Key? key, required this.paperModel})
-      : super(key: key);
+  const AttemptPaperScreen({Key? key}) : super(key: key);
 
   @override
   _AttemptPaperScreenState createState() => _AttemptPaperScreenState();
 }
 
 class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
-  int _currentQuestionIndex = 0;
-
-  @override
-  initState() {
-    super.initState();
-
-    // update to the passed model while starting to give the paper( load the paper model ).
-    questionPaperAttemptService.update(widget.paperModel);
-  }
-
-  QuestionModel _getCurrentQuestionModel(int index, PaperModel paperModel) {
-    return paperModel.questionModels[index];
-  }
-
-  void _handleConfirmLeaveTest() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardSection()),
-        (route) => false);
-  }
-
-  void _handleCancelLeaveTest() {
-    Navigator.pop(context);
-  }
-
-  void _handlePreviousButtonClick() {
-    if (_currentQuestionIndex > 0) {
-      setState(() {
-        _currentQuestionIndex -= 1;
-      });
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          content: const Text('Do you really want to leave the test ?'),
-          actions: [
-            TextButton(
-                onPressed: _handleCancelLeaveTest, child: const Text('No')),
-            TextButton(
-                onPressed: _handleConfirmLeaveTest, child: const Text('Yes'))
-          ],
-        ),
-      );
-    }
-  }
-
-  void _handleConfirmSubmitTest() {
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                PaperAnalysisScreen(correctPaperModel: widget.paperModel)));
-  }
-
-  void _handleCancelSubmitTest() {
-    Navigator.pop(context);
-  }
-
-  void _handleNextButtonClick() {
-    if (_currentQuestionIndex < widget.paperModel.questionModels.length - 1) {
-      setState(() {
-        _currentQuestionIndex += 1;
-      });
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          content: const Text('Do you really want to submit the test ?'),
-          actions: [
-            TextButton(
-                onPressed: _handleCancelSubmitTest, child: const Text('No')),
-            TextButton(
-                onPressed: _handleConfirmSubmitTest, child: const Text('Yes'))
-          ],
-        ),
-      );
-    }
-  }
-
-  void _handleOptionBoolClick(int questionIndex, int index) {
-    PaperModel _currentPaperModel = questionPaperAttemptService.current;
-    _currentPaperModel.questionModels[questionIndex].options[index].isCorrect =
-        !_currentPaperModel
-            .questionModels[questionIndex].options[index].isCorrect;
-    questionPaperAttemptService.update(_currentPaperModel);
-  }
-
   Widget _buildOption(int index, OptionModel optionModel) {
     return GestureDetector(
       child: Container(
@@ -110,14 +20,15 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           border: Border.all(width: 1),
-          color: optionModel.isCorrect
-              ? Colors.lightGreenAccent
-              : Colors.redAccent,
+          color: optionModel.isCorrect ? Colors.lightGreenAccent : Colors.white,
         ),
         child: Text('${index + 1}. ${optionModel.text}'),
       ),
       onTap: () {
-        _handleOptionBoolClick(_currentQuestionIndex, index);
+        attemptPaperBloc.attemptPaperEventSink.add({
+          'type': attemptPaperActions.changeOptionBoolean,
+          'payload': index
+        });
       },
     );
   }
@@ -130,21 +41,14 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
     return _optionsList;
   }
 
-  void _handleCancelChooseQuestionModal() {
-    Navigator.pop(context);
-  }
-
-  void _handleChooseQuestion(int index) {
-    setState(() {
-      _currentQuestionIndex = index;
-    });
-    Navigator.pop(context);
-  }
-
   Widget _buildChooseQuestionModalItem(int index) {
     return ElevatedButton(
       onPressed: () {
-        _handleChooseQuestion(index);
+        attemptPaperBloc.attemptPaperEventSink.add({
+          'type': attemptPaperActions.setCurrentQuestionIndex,
+          'payload': index
+        });
+        Navigator.pop(context);
       },
       child: Text(
         (index + 1).toString(),
@@ -182,12 +86,14 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
                 mainAxisSpacing: 5,
                 crossAxisSpacing: 5,
                 children: _buildChooseQuestionModalItems(
-                    widget.paperModel.questionModels.length),
+                    attemptPaperBloc.currentBlankPaper.questionModels.length),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _handleCancelChooseQuestionModal,
+              onPressed: () {
+                Navigator.pop(context);
+              },
               child: const Text('Cancel'),
               style: ElevatedButton.styleFrom(primary: Colors.grey),
             ),
@@ -197,7 +103,7 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
     );
   }
 
-  Widget _buildMainWidget(PaperModel paperModel) {
+  Widget _buildMainWidget(int currentQuestionIndex, PaperModel paperModel) {
     return Column(
       children: [
         Padding(
@@ -215,7 +121,7 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  'Q. ${_currentQuestionIndex + 1}/${paperModel.questionModels.length}',
+                  'Q. ${attemptPaperBloc.currentQuestionIndex + 1}/${attemptPaperBloc.currentBlankPaper.questionModels.length}',
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
@@ -229,7 +135,9 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
                 ),
                 padding: const EdgeInsets.all(10),
                 child: Text(
-                  _getCurrentQuestionModel(_currentQuestionIndex, paperModel)
+                  attemptPaperBloc
+                      .currentBlankPaper
+                      .questionModels[attemptPaperBloc.currentQuestionIndex]
                       .questionText,
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
@@ -243,8 +151,7 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: _buildOptions(
-                    _getCurrentQuestionModel(_currentQuestionIndex, paperModel)
-                        .options),
+                    paperModel.questionModels[currentQuestionIndex].options),
               ),
               padding: const EdgeInsets.all(10),
             ),
@@ -256,12 +163,44 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _handlePreviousButtonClick,
+                  onPressed: () {
+                    if (currentQuestionIndex > 0) {
+                      attemptPaperBloc.attemptPaperEventSink.add({
+                        'type': attemptPaperActions.setCurrentQuestionIndex,
+                        'payload': currentQuestionIndex - 1
+                      });
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          content: const Text(
+                              'Do you really want to leave the test ?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('No')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const DashboardSection()),
+                                      (route) => false);
+                                },
+                                child: const Text('Yes'))
+                          ],
+                        ),
+                      );
+                    }
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Icon(Icons.arrow_left),
-                      Text(_currentQuestionIndex == 0
+                      Text(currentQuestionIndex == 0
                           ? 'Leave test'
                           : 'Previous'),
                     ],
@@ -279,11 +218,43 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: _handleNextButtonClick,
+                  onPressed: () {
+                    if (currentQuestionIndex <
+                        paperModel.questionModels.length - 1) {
+                      attemptPaperBloc.attemptPaperEventSink.add({
+                        'type': attemptPaperActions.setCurrentQuestionIndex,
+                        'payload': currentQuestionIndex + 1
+                      });
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          content: const Text(
+                              'Do you really want to submit the test ?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('No')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const DashboardSection()));
+                                },
+                                child: const Text('Yes'))
+                          ],
+                        ),
+                      );
+                    }
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(_currentQuestionIndex ==
+                      Text(currentQuestionIndex ==
                               paperModel.questionModels.length - 1
                           ? 'Submit test'
                           : 'Next'),
@@ -307,28 +278,17 @@ class _AttemptPaperScreenState extends State<AttemptPaperScreen> {
       ),
       drawer: const MyDrawer(),
       body: StreamBuilder(
-        stream: questionPaperAttemptService.stream$,
-        builder: (BuildContext context, AsyncSnapshot snap) {
-          switch (snap.connectionState) {
-            case (ConnectionState.none):
-            case ConnectionState.waiting:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-            case ConnectionState.active:
-            case ConnectionState.done:
-              if (snap.hasError) {
-                return const Center(
-                  child: Text('An error occurred!'),
-                );
-              } else {
-                return _buildMainWidget(snap.data);
-              }
-            default:
-              return const Center(
-                child: Text('An error occurred!'),
-              );
-          }
+        stream: attemptPaperBloc.blankPaperStream,
+        initialData: attemptPaperBloc.currentBlankPaper,
+        builder: (BuildContext context, AsyncSnapshot blankPaperSnap) {
+          return StreamBuilder(
+              stream: attemptPaperBloc.currentQuestionIndexStream,
+              initialData: attemptPaperBloc.currentQuestionIndex,
+              builder: (BuildContext context,
+                  AsyncSnapshot currentQuestionIndexSnap) {
+                return _buildMainWidget(
+                    currentQuestionIndexSnap.data, blankPaperSnap.data);
+              });
         },
       ),
     );

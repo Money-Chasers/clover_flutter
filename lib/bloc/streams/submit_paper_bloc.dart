@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clover_flutter/data_models/paper_model.dart';
+import 'package:clover_flutter/bloc/models/paper_model.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,7 +21,7 @@ class SubmitPaperBloc {
   Stream<PaperModel> get submitPaperStream => _stateStreamController.stream;
   PaperModel get current => _stateStreamController.value;
 
-  final _eventStreamController = StreamController<Map<String, dynamic>>();
+  final _eventStreamController = BehaviorSubject<Map<String, dynamic>>();
   StreamSink<Map<String, dynamic>> get submitPaperEventSink =>
       _eventStreamController.sink;
   Stream<Map<String, dynamic>> get _submitPaperEventStream =>

@@ -1,9 +1,10 @@
+import 'package:clover_flutter/bloc/streams/drawer_bloc.dart';
+import 'package:clover_flutter/repository/authentication_helper.dart';
 import 'package:clover_flutter/screens/authentication/intro_screen.dart';
-import 'package:clover_flutter/screens/main_application/attempt_paper_screen/attempt_paper_screen.dart';
+import 'package:clover_flutter/screens/main_application/attempt_paper_screen/sections/attempt_questions_section.dart';
+import 'package:clover_flutter/bloc/streams/attempt_paper_bloc.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
-import 'package:clover_flutter/screens/main_application/settings_screen/settings_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
-import 'package:clover_flutter/utils/backend_helper.dart';
 import 'package:clover_flutter/utils/dev_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,6 +18,9 @@ class MyDrawer extends StatefulWidget {
 
 class _MyDrawerState extends State<MyDrawer> {
   void _navigateScreen(int screenId) {
+    drawerBloc.attemptPaperEventSink
+        .add({'type': drawerActions.changeIndex, 'payload': screenId});
+
     switch (screenId) {
       case (0):
         Navigator.pushReplacement(context,
@@ -29,11 +33,14 @@ class _MyDrawerState extends State<MyDrawer> {
                 builder: (context) => const PaperDetailsSection()));
         break;
       case (2):
+        attemptPaperBloc.attemptPaperEventSink.add({
+          'type': attemptPaperActions.assignFullPaperModel,
+          'payload': getFakePaperModel()
+        });
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    AttemptPaperScreen(paperModel: getFakePaperModel())));
+                builder: (context) => const AttemptPaperScreen()));
         break;
       default:
         Navigator.pushReplacement(context,
@@ -41,13 +48,17 @@ class _MyDrawerState extends State<MyDrawer> {
     }
   }
 
-  Widget _buildNavigationDrawerTile(text, icon, screenId) {
+  Widget _buildNavigationDrawerTile(
+      String text, IconData icon, int myScreenId, int currentScreenId) {
     return GestureDetector(
       child: Container(
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
+          color: myScreenId == currentScreenId
+              ? Theme.of(context).primaryColorLight
+              : Colors.transparent,
         ),
         child: Row(
           children: [
@@ -58,7 +69,7 @@ class _MyDrawerState extends State<MyDrawer> {
         ),
       ),
       onTap: () {
-        _navigateScreen(screenId);
+        _navigateScreen(myScreenId);
       },
     );
   }
@@ -77,8 +88,7 @@ class _MyDrawerState extends State<MyDrawer> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildMainWidget(int currentIndex) {
     return SafeArea(
       child: Drawer(
         child: Column(
@@ -111,13 +121,15 @@ class _MyDrawerState extends State<MyDrawer> {
                     _buildNavigationDrawerTile(
                         AppLocalizations.of(context)!.dashboard,
                         Icons.dashboard,
-                        0),
+                        0,
+                        currentIndex),
                     _buildNavigationDrawerTile(
                         AppLocalizations.of(context)!.submitQuestions,
                         Icons.question_answer,
-                        1),
+                        1,
+                        currentIndex),
                     _buildNavigationDrawerTile(
-                        'Demo attempt paper', Icons.receipt, 2),
+                        'Demo attempt paper', Icons.receipt, 2, currentIndex),
                   ],
                 ),
               ),
@@ -130,12 +142,7 @@ class _MyDrawerState extends State<MyDrawer> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildDrawerButton(Icons.settings, () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SettingsScreen()));
-                  }),
+                  _buildDrawerButton(Icons.settings, () {}),
                   _buildDrawerButton(
                     Icons.power_settings_new,
                     () {
@@ -161,7 +168,7 @@ class _MyDrawerState extends State<MyDrawer> {
                                           .textTheme
                                           .subtitle1),
                                   onPressed: () {
-                                    BackendHelper.signOut().then((_) {
+                                    AuthenticationHelper.signOut().then((_) {
                                       Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
@@ -183,5 +190,15 @@ class _MyDrawerState extends State<MyDrawer> {
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: drawerBloc.currentIndexStream,
+        initialData: drawerBloc.currentIndex,
+        builder: (BuildContext context, AsyncSnapshot currentIndexSnap) {
+          return _buildMainWidget(currentIndexSnap.data);
+        });
   }
 }

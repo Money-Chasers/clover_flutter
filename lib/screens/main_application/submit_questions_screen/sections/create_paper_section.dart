@@ -1,12 +1,12 @@
-import 'package:clover_flutter/components/common_widgets.dart';
+import 'package:clover_flutter/bloc/models/paper_model.dart';
+import 'package:clover_flutter/components/constant_widgets.dart';
 import 'package:clover_flutter/components/drawer.dart';
-import 'package:clover_flutter/data_models/paper_model.dart';
 import 'package:clover_flutter/screens/main_application/dashboard_screen/dashboard_screen.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/add_question_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/edit_question_section.dart';
 import 'package:clover_flutter/screens/main_application/submit_questions_screen/sections/paper_details_section.dart';
-import 'package:clover_flutter/screens/main_application/submit_questions_screen/state_management/submit_paper_bloc.dart';
-import 'package:clover_flutter/utils/backend_helper.dart';
+import 'package:clover_flutter/bloc/streams/submit_paper_bloc.dart';
+import 'package:clover_flutter/repository/database_helper.dart';
 import 'package:flutter/material.dart';
 
 class CreatePaperSection extends StatefulWidget {
@@ -18,7 +18,7 @@ class CreatePaperSection extends StatefulWidget {
 
 class _CreatePaperSectionState extends State<CreatePaperSection> {
   void _handleSaveClick() {
-    BackendHelper.addQuestionPaper(submitPaperBloc.current).then((value) {
+    DatabaseHelper.addQuestionPaper(submitPaperBloc.current).then((value) {
       buildSnackBarMessage(context, 'Task completed successfully!');
       Navigator.pushAndRemoveUntil(
           context,
@@ -193,7 +193,6 @@ class _CreatePaperSectionState extends State<CreatePaperSection> {
         stream: submitPaperBloc.submitPaperStream,
         initialData: submitPaperBloc.current,
         builder: (BuildContext context, AsyncSnapshot snap) {
-          print(snap.data.paperTitle);
           return _buildMainWidget(snap.data);
         },
       ),
