@@ -74,4 +74,5 @@ class _MyAppState extends State<MyApp> {
         locale: Locale(_locale),
         home: const SplashScreen());
   }
+
 }
